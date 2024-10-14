@@ -4,10 +4,9 @@ This Repo is designed try to collect all activities in vscode.
 
 this repo is based on ms vscode example https://github.com/microsoft/vscode-extension-samples
 
-This sample provides following views
+This extensio provides following features for now
 
-- Node dependencies view
-- Ftp file explorer view
+- quck access to folders,files,url,batches,tools... only in vscode by json configuration.
 
 Following example shows Node dependencies view in Package Explorer View container.
 
