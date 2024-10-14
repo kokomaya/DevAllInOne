@@ -136,7 +136,7 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 							}
 							const parsedCommand = this.parseCommandString(value);
 							return new PlayerItem(key, '', vscode.TreeItemCollapsibleState.None, element.fullpath?.toString() + '/' + key.toString(), 
-							{command: 'extension.justBeatIt',title: '',arguments: [parsedCommand.command, parsedCommand.type]});
+							{command: 'extension.justBeatIt',title: '',arguments: [parsedCommand.command, parsedCommand.type, parsedCommand.argument,parsedCommand.reserved1]});
 						}
 					
 					}
@@ -202,7 +202,7 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 			reserved1: parts[1],
 			reserved2: parts[2],
 			command: parts[3],
-			arguments: parts[4]
+			argument: parts[4]
 		};
 	}
 	private pathExists(p: string): boolean {
@@ -246,7 +246,7 @@ interface ParsedCommand {
     reserved1: string|undefined;
     reserved2: string|undefined;
     command: string;
-    arguments: string|undefined;
+    argument: string|undefined;
 }
 
 

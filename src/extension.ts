@@ -9,7 +9,8 @@ import { TestView } from './testView';
 import { DevPlayer, PlayerItem } from './rad6xxDevPlay';
 import { containsBothSubstrings } from './utilities';
 import { exec } from 'child_process';
-import { spawn } from 'child_process';
+import { spawn,ChildProcessWithoutNullStreams } from 'child_process';
+
 
 
 
@@ -20,48 +21,39 @@ export function activate(context: vscode.ExtensionContext) {
 	if (rootPath !== undefined) {  
 		const workspaceName: string = path.basename(rootPath as string); 
 
-		if(containsBothSubstrings(workspaceName, "RAD6XX", "IUC")){
-
 			// Samples of `window.registerTreeDataProvider`
 			const radPlayerInstance = new DevPlayer(rootPath);
 			vscode.window.registerTreeDataProvider('rad6xxDevPlay', radPlayerInstance);
 			vscode.commands.registerCommand('rad6xxDevPlay.refreshEntry', () => radPlayerInstance.refresh());
-			vscode.commands.registerCommand('extension.justBeatIt', (command,type, argument, tooltip:string|undefined,) => {
+			vscode.commands.registerCommand('extension.justBeatIt', (command,type, argument:string, reserved1:string|undefined,) => {
 				const absolutePath = path.resolve(rootPath, command);
+
+				let newargs = '';
+				if(argument){
+					newargs = argument.replace('${rootPath}', rootPath);
+				}else{
+					newargs = argument;
+				}
+
 				if(type){
 					if(type === "CMD"){
-						// exec(absolutePath, (error, stdout, stderr) => {
-						// 	if (error) {
-						// 		vscode.window.showErrorMessage(`Error: ${error.message}`);
-						// 		return;
-						// 	}
-						// 	if (stderr) {
-						// 		vscode.window.showErrorMessage(`Stderr: ${stderr}`);
-						// 		return;
-						// 	}
-						// 	vscode.window.showInformationMessage(`Output: ${stdout}`);
-						// });
-
-
-						// const terminal = vscode.window.createTerminal('Run CMD File');
-						// terminal.sendText(`"${absolutePath}"`);
-						// terminal.show();
-
-						// Spawn a new PowerShell process
-						const ps = spawn('powershell.exe', ['-NoExit', '-Command', `"& {Start-Process -FilePath '${absolutePath}'}"`], {
+						//Spawn a new PowerShell process
+						const ps = spawn('powershell.exe', ['-NoExit', '-Command', `"& {Start-Process -FilePath '${absolutePath}' -ArgumentList '${newargs}'}"`], {
 							shell: true
 						});
 
+
 						ps.stdout.on('data', (data) => {
-							console.log(`stdout: ${data}`);
+							//console.log(`stdout: ${data}`);
 						});
 
 						ps.stderr.on('data', (data) => {
-							console.error(`stderr: ${data}`);
+							//console.error(`stderr: ${data}`);
+							vscode.window.showErrorMessage(`Stderr: ${data}`);
 						});
 
 						ps.on('close', (code) => {
-							console.log(`PowerShell process exited with code ${code}`);
+							//console.log(`PowerShell process exited with code ${code}`);
 						});
 					}else if(type === "URL"){
 						vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(command));
@@ -121,15 +113,6 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 			});
 			vscode.commands.registerCommand('extension.openJsonSelection', range => jsonOutlineProvider.select(range));
-
-		}else{
-			vscode.window.showWarningMessage('rad6xx-devenv deactived due to current workspace is not IUC', 'Open Folder')
-			.then(selection => {
-				if (selection === 'Open Folder') {
-					vscode.commands.executeCommand('vscode.openFolder');
-				}
-			});
-		}
 	}else{
 		vscode.window.showWarningMessage('rad6xx-devenv deactived due to current workspace is not IUC', 'Open Folder')
 		.then(selection => {
