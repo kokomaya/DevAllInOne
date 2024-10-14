@@ -1,11 +1,8 @@
 # Views & View Containers
 
-This sample demonstrates how to implement and contribute a tree view in VS Code. This includes:
+This Repo is designed try to collect all activities in vscode. 
 
-- Contributing views and view containers.
-- Contributing actions in various location of the view.
-- Implementing the tree data provider for the view.
-- Creating and working with the view.
+this repo is based on ms vscode example https://github.com/microsoft/vscode-extension-samples
 
 This sample provides following views
 
