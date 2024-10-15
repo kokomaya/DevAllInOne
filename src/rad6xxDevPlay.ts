@@ -50,58 +50,7 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 
 	}
 
-	/**
-	 * Given the path to package.json, read all its dependencies and devDependencies.
-	 */
-	// private getDepsInPackageJson(packageJsonPath: string): PlayerItem[] {
-	// 	const workspaceRoot = this.workspaceRoot;
-	// 	if (this.pathExists(packageJsonPath) && workspaceRoot) {
-	// 		const jsonData = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
 
-	// 		// const toDep = (moduleName: string, version: string): PlayerItem => {
-	// 		// 	if (this.pathExists(path.join(workspaceRoot, 'node_modules', moduleName))) {
-	// 		// 		return new PlayerItem(moduleName, version, vscode.TreeItemCollapsibleState.Collapsed);
-	// 		// 	} else {
-	// 		// 		return new PlayerItem(moduleName, version, vscode.TreeItemCollapsibleState.None, {
-	// 		// 			command: 'extension.justBeatIt',
-	// 		// 			title: '',
-	// 		// 			arguments: [moduleName]
-	// 		// 		});
-	// 		// 	}
-	// 		// };
-    //         // const toItem = (key: string, value: string): PlayerItem => {
-    //         //     return new PlayerItem(key, value, vscode.TreeItemCollapsibleState.None, {command: 'extension.justBeatIt',title: '',arguments: [key]});
-    //         // };
-
-    //         // const items = [];
-    //         // for (const section in jsonData) {
-    //         //         for (const key in jsonData[section]) {
-    //         //                 items.push(toItem(key, jsonData[section][key]));
-    //         //         }
-                
-    //         // }
-    //         // return items;
-	// 	// 	const topView = jsonData
-	// 	// 	? Object.keys(jsonData).map(dep => toItem(dep, jsonData[dep]))
-	// 	// 	: [];
-
-	// 	// 	const deps = jsonData.dependencies
-	// 	// 		? Object.keys(jsonData.dependencies).map(dep => toItem(dep, jsonData.dependencies[dep]))
-	// 	// 		: [];
-	// 	// 	const devDeps = jsonData.devDependencies
-	// 	// 		? Object.keys(jsonData.devDependencies).map(dep => toItem(dep, jsonData.devDependencies[dep]))
-	// 	// 		: [];
-	// 	// 	const ib = jsonData.integrationBuild
-	// 	// 	? Object.keys(jsonData.integrationBuild).map(dep => toItem(dep, jsonData.integrationBuild[dep]))
-	// 	// 	: [];
-	// 	// 	let treeViewItem = deps.concat(devDeps);
-
-	// 	// 	treeViewItem = treeViewItem.concat(ib);
-	// 	// 	return topView;
-	// 	// } else {
-	// 		return new Object[];
-	// 	}
-	// }
 	private getValueByPath(json: any, path: string): any {
 		const keys = path.split('/');
 		let current = json;
@@ -120,47 +69,51 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 
 	private getItemsInJson(jsonFilePath: string, element?:PlayerItem): PlayerItem[] {
 		
-		if (this.pathExists(jsonFilePath)) {
-			const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
-			
+		// if (this.pathExists(jsonFilePath)) {
+		// 	//const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
+
+		// } else {
+		// 	return [];
+		// }
+		if(this.AlljsonData){
 			const toItem = (key: string, value: any): PlayerItem => {
-					if(element){
-						//const children = Object.keys(value).map(k => toItem(k, value[k]));
-						//childrens = Object.keys(children).map(key => toItem(key, children[key]));
-						const current = this.getValueByPath(jsonData, element.fullpath?.toString() + '/' + key.toString());
-						if(this.hasNoChildItems(current)){
-							return new PlayerItem(key, '', vscode.TreeItemCollapsibleState.Collapsed, element.fullpath?.toString() + '/' + key.toString());
-						}else{
-							if(JSON.stringify(value) === '{}'){
-								return new PlayerItem('null', '', vscode.TreeItemCollapsibleState.Collapsed);
-							}
-							const parsedCommand = this.parseCommandString(value);
-							return new PlayerItem(key, '', vscode.TreeItemCollapsibleState.None, element.fullpath?.toString() + '/' + key.toString(), 
-							{command: 'extension.justBeatIt',title: '',arguments: [parsedCommand.command, parsedCommand.type, parsedCommand.argument,parsedCommand.reserved1]});
+				if(element){
+					//const children = Object.keys(value).map(k => toItem(k, value[k]));
+					//childrens = Object.keys(children).map(key => toItem(key, children[key]));
+					const current = this.getValueByPath(this.AlljsonData, element.fullpath?.toString() + '/' + key.toString());
+					if(this.hasNoChildItems(current)){
+						return new PlayerItem(key, '', vscode.TreeItemCollapsibleState.Collapsed, element.fullpath?.toString() + '/' + key.toString());
+					}else{
+						if(JSON.stringify(value) === '{}'){
+							return new PlayerItem('null', '', vscode.TreeItemCollapsibleState.Collapsed);
 						}
-					
+						const parsedCommand = this.parseCommandString(value);
+						return new PlayerItem(key, '', vscode.TreeItemCollapsibleState.None, element.fullpath?.toString() + '/' + key.toString(), 
+						{command: 'extension.justBeatIt',title: '',arguments: [parsedCommand.command, parsedCommand.type, parsedCommand.argument,parsedCommand.reserved1]});
 					}
-					else{
-						return new PlayerItem(key, value, vscode.TreeItemCollapsibleState.Collapsed, key.toString());
-					}
+				
+				}
+				else{
+					return new PlayerItem(key, value, vscode.TreeItemCollapsibleState.Collapsed, key.toString());
+				}
 
-            };
+			};
 
-	
 			if(element?.fullpath){
-				const subJson = this.getValueByPath(jsonData, element?.fullpath);
+				const subJson = this.getValueByPath(this.AlljsonData, element?.fullpath);
 				if(subJson){
 					const children = Object.keys(subJson).map(key => toItem(key, subJson[key]));
 					return children;
 				}	
 
 			}else{
-				const children =  Object.keys(jsonData).map(key => toItem(key, jsonData[key]));
+				const children =  Object.keys(this.AlljsonData).map(key => toItem(key, this.AlljsonData[key]));
 				return children;
 			}
 
 			return [];
-		} else {
+		}
+		else{
 			return [];
 		}
 	}
