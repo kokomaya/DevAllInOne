@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import { pathExists } from './utilities';
 import { stringify } from 'querystring';
 
 export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
@@ -9,20 +10,22 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 	readonly onDidChangeTreeData: vscode.Event<PlayerItem | undefined | void> = this._onDidChangeTreeData.event;
 	private pathToItemMap: Map<string|null, PlayerItem|undefined> = new Map();
 	private AlljsonData;  // debug
+	private workspace;
 	constructor(private workspaceRoot: string | undefined) {
 		if(workspaceRoot){
 			const jsonFilePath = path.join(workspaceRoot, './conf/config.json');
-			if (this.pathExists(jsonFilePath)) {
+			if (pathExists(jsonFilePath)) {
 				this.AlljsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
 				this.initPathFromJson(this.AlljsonData, "");
 			}
+			this.workspace = workspaceRoot;
 
 		}
 
 	}
 	
-	
 	refresh(): void {
+
 		this._onDidChangeTreeData.fire();
 	}
 
@@ -40,7 +43,7 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 			return Promise.resolve(this.getItemsInJson(packageJsonPath, element));
 		} else {
 			
-			if (this.pathExists(packageJsonPath)) {
+			if (pathExists(packageJsonPath)) {
 				return Promise.resolve(this.getItemsInJson(packageJsonPath, element));
 			} else {
 				vscode.window.showInformationMessage('Workspace has no conf/config.json');
@@ -69,19 +72,13 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 
 	private getItemsInJson(jsonFilePath: string, element?:PlayerItem): PlayerItem[] {
 		
-		// if (this.pathExists(jsonFilePath)) {
-		// 	//const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
-
-		// } else {
-		// 	return [];
-		// }
 		if(this.AlljsonData){
 			const toItem = (key: string, value: any): PlayerItem => {
 				if(element){
 					//const children = Object.keys(value).map(k => toItem(k, value[k]));
 					//childrens = Object.keys(children).map(key => toItem(key, children[key]));
 					const current = this.getValueByPath(this.AlljsonData, element.fullpath?.toString() + '/' + key.toString());
-					if(this.hasNoChildItems(current)){
+					if(this.hasChildItems(current)){
 						return new PlayerItem(key, '', vscode.TreeItemCollapsibleState.Collapsed, element.fullpath?.toString() + '/' + key.toString());
 					}else{
 						if(JSON.stringify(value) === '{}'){
@@ -130,13 +127,13 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 			}
 			
 			console.log(obj[section], typeof obj[section]);
-			if(this.hasNoChildItems(obj[section])){
+			if(this.hasChildItems(obj[section])){
 				this.initPathFromJson(obj[section], itemPath);
 			}
 		}
 	}
 
-	private hasNoChildItems(obj: any): boolean {
+	private hasChildItems(obj: any): boolean {
 		if(obj){
 			if(typeof obj === 'string'){
 				return false;
@@ -157,15 +154,6 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 			command: parts[3],
 			argument: parts[4]
 		};
-	}
-	private pathExists(p: string): boolean {
-		try {
-			fs.accessSync(p);
-		} catch (err) {
-			return false;
-		}
-
-		return true;
 	}
 }
 

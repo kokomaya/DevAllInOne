@@ -2,12 +2,11 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';  
+import * as fs from 'fs';
 
 import { JsonOutlineProvider } from './jsonOutline';
-import { TestViewDragAndDrop } from './testViewDragAndDrop';
-import { TestView } from './testView';
 import { DevPlayer, PlayerItem } from './rad6xxDevPlay';
-import { containsBothSubstrings } from './utilities';
+import { pathExists } from './utilities';
 import { exec } from 'child_process';
 import { spawn,ChildProcessWithoutNullStreams } from 'child_process';
 
@@ -20,11 +19,13 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	if (rootPath !== undefined) {  
 		const workspaceName: string = path.basename(rootPath as string); 
-
-			// Samples of `window.registerTreeDataProvider`
+		const jsonFilePath = path.join(rootPath, './conf/config.json');
+		if (pathExists(jsonFilePath)) {
+						// Samples of `window.registerTreeDataProvider`
 			const radPlayerInstance = new DevPlayer(rootPath);
 			vscode.window.registerTreeDataProvider('rad6xxDevPlay', radPlayerInstance);
-			vscode.commands.registerCommand('rad6xxDevPlay.refreshEntry', () => radPlayerInstance.refresh());
+			//vscode.commands.registerCommand('rad6xxDevPlay.refreshEntry', () => radPlayerInstance.refresh());
+			vscode.commands.registerCommand('rad6xxDevPlay.refreshEntry', () => vscode.commands.executeCommand('workbench.action.reloadWindow'));
 			vscode.commands.registerCommand('extension.justBeatIt', (command,type, argument:string, reserved1:string|undefined,) => {
 				const absolutePath = path.resolve(rootPath, command);
 
@@ -90,11 +91,11 @@ export function activate(context: vscode.ExtensionContext) {
 						});
 					}
 				}
-				
+			
 			});
-			vscode.commands.registerCommand('rad6xxDevPlay.addEntry', () => vscode.window.showInformationMessage(`Successfully called add entry.`));
-			vscode.commands.registerCommand('rad6xxDevPlay.editEntry', (node: PlayerItem) => vscode.window.showInformationMessage(`Successfully called edit entry on ${node.label}.`));
-			vscode.commands.registerCommand('rad6xxDevPlay.deleteEntry', (node: PlayerItem) => vscode.window.showInformationMessage(`Successfully called delete entry on ${node.label}.`));
+			vscode.commands.registerCommand('rad6xxDevPlay.addEntry', () => vscode.window.showInformationMessage(`AddEntry feature is not suported yet!`));
+			vscode.commands.registerCommand('rad6xxDevPlay.editEntry', (node: PlayerItem) => vscode.window.showInformationMessage(`EditEntry feature is not suported yet!`));
+			vscode.commands.registerCommand('rad6xxDevPlay.deleteEntry', (node: PlayerItem) => vscode.window.showInformationMessage(`DeleteEntry feature is not suported yet!`));
 
 
 			const jsonOutlineProvider = new JsonOutlineProvider(context);
@@ -112,9 +113,52 @@ export function activate(context: vscode.ExtensionContext) {
 					jsonOutlineProvider.rename(offset);
 				}
 			});
-			vscode.commands.registerCommand('extension.openJsonSelection', range => jsonOutlineProvider.select(range));
+			//vscode.commands.registerCommand('extension.openJsonSelection', range => jsonOutlineProvider.select(range));
+		}
+		else{
+			vscode.window.showWarningMessage('No ./conf/config.json found\r\n, you could create a new ./conf/config.json or ask for it from integrator', 'Create a template')
+			.then(selection => {
+				if (selection === 'Create a template') {
+					fs.writeFile(jsonFilePath, `{
+	"integrationBuild": {
+		"cmd_test": "CMD|||../../test.cmd",
+		"check": {
+			"Reset":"CMD||Reserved|../../reset.bat",
+			"Stash":"CMD||Reserved|../../stash.bat",
+			"None":"CMD||Reserved|../../none.bat"
+		},
+		"DevEnv_Git_Bash":"CMD|||git-bash.exe|--cd=./"
+	},
+	"quickAccess": {
+		"GenData": "DIR|||./test/Data"
+	},
+	"pages": {
+		"m365":{
+			"home":"URL|||https://www.microsoft365.com"
+		}
+	},
+	"docs": {
+		"doc_test":{
+			"excel":"DOC|||./test/test.xlsm",
+			"pdf":"DOC|||./test//test.pdf"
+		}
+	}
+}`, 
+					(err) => {
+						if (err) {
+							vscode.window.showErrorMessage('Failed to create ' + './conf/config.json, make sure conf folder exsits');
+						} else {
+							vscode.window.showInformationMessage('./conf/config.json' + ' created successfully!');
+							// refresh windows toload config.json
+							vscode.commands.executeCommand('workbench.action.reloadWindow');
+						}
+					});
+				}
+			});
+		}
+
 	}else{
-		vscode.window.showWarningMessage('rad6xx-devenv deactived due to current workspace is not IUC', 'Open Folder')
+		vscode.window.showWarningMessage('You have to open a folder to activate DevAllInOne', 'Open Folder')
 		.then(selection => {
 			if (selection === 'Open Folder') {
 				vscode.commands.executeCommand('vscode.openFolder');

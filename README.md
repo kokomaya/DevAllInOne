@@ -13,35 +13,35 @@ this example provide the similar feature like ms vscode example, also provide mo
 ![Package Explorer](./resources/package-explorer.png)
 
 ## How to Work with DevAllInOne
--- Open any folder with vscode
--- Put a json file named "config.json" rootpath/of/your/workspace/conf/config.json
--- The json file final child node shuold look like "TYPE|RESERVED|RESERVED|ACTION|ARGUMENTS"
--- Example:
-{
-	"integrationBuild": {
-		"cmd_test": "CMD|||../../test.cmd",
-		"check": {
-			"Reset":"CMD||Reserved|../../reset.bat",
-			"Stash":"CMD||Reserved|../../stash.bat",
-			"None":"CMD||Reserved|../../none.bat"
-		},
-		"DevEnv_Git_Bash":"CMD|||git-bash.exe|--cd=${rootPath}/../../"
-	},
-	"quickAccess": {
-		"GenData": "DIR|||./test/Data"
-	},
-	"pages": {
-		"m365":{
-			"home":"URL|||https://www.microsoft365.com"
-		}
-	},
-	"docs": {
-		"doc_test":{
-			"excel":"DOC|||./test/test.xlsm",
-			"pdf":"DOC|||./test//test.pdf",
-		}
-	}
-}
+- Open any folder with vscode
+- Put a json file named "config.json" rootpath/of/your/workspace/conf/config.json
+- The json file final child node shuold look like "TYPE|RESERVED|RESERVED|ACTION|ARGUMENTS"
+- Example:
+- {
+	- "integrationBuild": {
+		- "cmd_test": "CMD|||../../test.cmd",
+		- "check": {
+			- "Reset":"CMD||Reserved|../../reset.bat",
+			- "Stash":"CMD||Reserved|../../stash.bat",
+			- "None":"CMD||Reserved|../../none.bat"
+		- },
+		- "DevEnv_Git_Bash":"CMD|||git-bash.exe|--cd=${rootPath}/../../"
+	- },
+	- "quickAccess": {
+		- "GenData": "DIR|||./test/Data"
+	- },
+	- "pages": {
+		- "m365":{
+			- "home":"URL|||https://www.microsoft365.com"
+		- }
+	- },
+	- "docs": {
+		- "doc_test":{
+			- "excel":"DOC|||./test/test.xlsm",
+			- "pdf":"DOC|||./test//test.pdf",
+		- }
+	- }
+- }
 
 ## VS Code API
 
