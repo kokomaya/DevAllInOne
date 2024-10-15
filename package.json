@@ -2,7 +2,7 @@
 	"name": "DevAllInOne",
 	"displayName": "DevAllInOne",
 	"description": "Make all develop environment in one workspace",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"publisher": "CSSDC-ADAS",
 	"private": true,
 	"license": "MIT",
@@ -16,6 +16,7 @@
 	"categories": [
 		"Other"
 	],
+	"icon": "resources/icon.png",
 	"activationEvents": [
 		"onLanguage:json",
 		"onLanguage:jsonc"

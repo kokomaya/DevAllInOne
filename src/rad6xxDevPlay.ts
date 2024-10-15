@@ -43,7 +43,7 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 			if (this.pathExists(packageJsonPath)) {
 				return Promise.resolve(this.getItemsInJson(packageJsonPath, element));
 			} else {
-				vscode.window.showInformationMessage('Workspace has no package.json');
+				vscode.window.showInformationMessage('Workspace has no conf/config.json');
 				return Promise.resolve([]);
 			}
 		}
