@@ -3,6 +3,7 @@
 This extension is designed try to collect all activities in vscode. 
 
 This extension is based on ms vscode example https://github.com/microsoft/vscode-extension-samples, and provides the similar feature like ms vscode example, also provide more features to help your daily work.
+
 ![Package Explorer](./resources/package-explorer.png)
 
 This extension provides following features for now
