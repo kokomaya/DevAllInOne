@@ -19,13 +19,10 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 				this.initPathFromJson(this.AlljsonData, "");
 			}
 			this.workspace = workspaceRoot;
-
 		}
-
 	}
 	
 	refresh(): void {
-
 		this._onDidChangeTreeData.fire();
 	}
 
@@ -126,7 +123,7 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 				this.pathToItemMap.set(itemPath, undefined);
 			}
 			
-			console.log(obj[section], typeof obj[section]);
+			//console.log(obj[section], typeof obj[section]);
 			if(this.hasChildItems(obj[section])){
 				this.initPathFromJson(obj[section], itemPath);
 			}

@@ -11,8 +11,6 @@ import { exec } from 'child_process';
 import { spawn,ChildProcessWithoutNullStreams } from 'child_process';
 
 
-
-
 export function activate(context: vscode.ExtensionContext) {
 	const rootPath = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
 		? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
@@ -36,26 +34,33 @@ export function activate(context: vscode.ExtensionContext) {
 					newargs = argument;
 				}
 
+				newargs = path.resolve(newargs);
+
 				if(type){
 					if(type === "CMD"){
-						//Spawn a new PowerShell process
-						const ps = spawn('powershell.exe', ['-NoExit', '-Command', `"& {Start-Process -FilePath '${absolutePath}' -ArgumentList '${newargs}'}"`], {
-							shell: true
-						});
+						if(!reserved1){
+							//Spawn a new PowerShell process
+							const ps = spawn('powershell.exe', ['-NoExit', '-Command', `"& {Start-Process -FilePath '${absolutePath}' -ArgumentList '${newargs}'}"`], {
+								shell: true
+							});
 
 
-						ps.stdout.on('data', (data) => {
-							//console.log(`stdout: ${data}`);
-						});
+							ps.stdout.on('data', (data) => {
+								//console.log(`stdout: ${data}`);
+							});
 
-						ps.stderr.on('data', (data) => {
-							//console.error(`stderr: ${data}`);
-							vscode.window.showErrorMessage(`Stderr: ${data}`);
-						});
+							ps.stderr.on('data', (data) => {
+								//console.error(`stderr: ${data}`);
+								vscode.window.showErrorMessage(`Stderr: ${data}`);
+							});
 
-						ps.on('close', (code) => {
-							//console.log(`PowerShell process exited with code ${code}`);
-						});
+							ps.on('close', (code) => {
+								//console.log(`PowerShell process exited with code ${code}`);
+							});
+						}else if( reserved1 === "DIRECT"){
+							vscode.commands.executeCommand('workbench.action.terminal.sendSequence', { text: command + " " + newargs});
+						}
+
 					}else if(type === "URL"){
 						vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(command));
 					}else if(type === "DOC"){
