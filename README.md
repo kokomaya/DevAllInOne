@@ -43,7 +43,7 @@ This extension provides following features for now
 }
 ```
 
-- By default, ${workspace}/conf/config.json and ${workspace}/conf/config.json are imported, you could also specify customized json file(s) in setting views, those files must be seperated by semicolon. All of those json files will be merged if you specified the `JSON merge` as true. you could also press `ctrl + shift + p` to search `DevAllInOne:Select json file` and excute to set the seting json file(s).
+- By default, ${workspace}/conf/config.json and ${workspace}/conf/config_local.json are imported, you could also specify customized json file(s) in setting views, those files must be seperated by semicolon. All of those json files will be merged if you specified the `JSON merge` as true. you could also press `ctrl + shift + p` to search `DevAllInOne:Select json file` and excute to set the seting json file(s).
 
 ## VS Code API
 
