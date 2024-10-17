@@ -79,3 +79,7 @@ Refer to [Usage](./USAGE.md) document for more details.
 - Node dependencies view is shown in Package explorer view contaier in Activity bar.
 - FTP file explorer view should be shown in Explorer
 
+## One more thing
+
+- If you have any ideas no matter what, including other than this tool, you can leave review comments by clicking the stars ⭐⭐⭐⭐⭐ in vscode or leave a comment in github, the author will check and feedback to you😊😊😊(❁´◡`❁).
+

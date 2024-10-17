@@ -1,8 +1,8 @@
 {
 	"name": "DevAllInOne",
 	"displayName": "DevAllInOne",
-	"description": "Make all develop environments in one workspace",
-	"version": "0.0.7",
+	"description": "Make all develop environments in one workspace, make everything easier",
+	"version": "0.0.8",
 	"publisher": "CSSDC-ADAS",
 	"private": true,
 	"license": "MIT",
