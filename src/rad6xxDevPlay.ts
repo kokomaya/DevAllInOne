@@ -3,21 +3,36 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { pathExists } from './utilities';
 import { stringify } from 'querystring';
+import merge from 'deepmerge';
 
 export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 
 	private _onDidChangeTreeData: vscode.EventEmitter<PlayerItem | undefined | void> = new vscode.EventEmitter<PlayerItem | undefined | void>();
 	readonly onDidChangeTreeData: vscode.Event<PlayerItem | undefined | void> = this._onDidChangeTreeData.event;
 	private pathToItemMap: Map<string|null, PlayerItem|undefined> = new Map();
-	private AlljsonData;  // debug
+	private AlljsonData:any;  // debug
+	private localJsonData;  // debug
 	private workspace;
 	constructor(private workspaceRoot: string | undefined) {
 		if(workspaceRoot){
 			const jsonFilePath = path.join(workspaceRoot, './conf/config.json');
+			const localJsonFilePath = path.join(workspaceRoot, './conf/config_local.json')
 			if (pathExists(jsonFilePath)) {
 				this.AlljsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
-				this.initPathFromJson(this.AlljsonData, "");
+				
 			}
+			if (pathExists(jsonFilePath)) {
+				this.localJsonData = JSON.parse(fs.readFileSync(localJsonFilePath, 'utf-8'));
+			}
+			
+			// If local and global json file both exsit, merge them together
+			if(this.AlljsonData && this.localJsonData){
+				this.AlljsonData = merge(this.AlljsonData, this.localJsonData);
+			}
+
+			//Init json item path
+			this.initPathFromJson(this.AlljsonData, "");
+
 			this.workspace = workspaceRoot;
 		}
 	}
@@ -35,18 +50,8 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 			vscode.window.showInformationMessage('No dependency in empty workspace');
 			return Promise.resolve([]);
 		}
-		const packageJsonPath = path.join(this.workspaceRoot, './conf/config.json');
-		if (element) {
-			return Promise.resolve(this.getItemsInJson(packageJsonPath, element));
-		} else {
-			
-			if (pathExists(packageJsonPath)) {
-				return Promise.resolve(this.getItemsInJson(packageJsonPath, element));
-			} else {
-				vscode.window.showInformationMessage('Workspace has no conf/config.json');
-				return Promise.resolve([]);
-			}
-		}
+		const packageJsonPath = ""; // intentionally assignment
+		return Promise.resolve(this.getItemsInJson(packageJsonPath, element));
 
 	}
 

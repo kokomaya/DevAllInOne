@@ -18,20 +18,23 @@ export function activate(context: vscode.ExtensionContext) {
 	if (rootPath !== undefined) {  
 		const workspaceName: string = path.basename(rootPath as string); 
 		const jsonFilePath = path.join(rootPath, './conf/config.json');
-		if (pathExists(jsonFilePath)) {
-						// Samples of `window.registerTreeDataProvider`
+		const localJsonFilePath = path.join(rootPath, './conf/config_local.json')
+		vscode.commands.registerCommand('rad6xxDevPlay.refreshEntry', () => vscode.commands.executeCommand('workbench.action.reloadWindow'));
+		if (pathExists(jsonFilePath) || pathExists(localJsonFilePath)) {
+			// Samples of `window.registerTreeDataProvider`
 			const radPlayerInstance = new DevPlayer(rootPath);
 			vscode.window.registerTreeDataProvider('rad6xxDevPlay', radPlayerInstance);
 			//vscode.commands.registerCommand('rad6xxDevPlay.refreshEntry', () => radPlayerInstance.refresh());
-			vscode.commands.registerCommand('rad6xxDevPlay.refreshEntry', () => vscode.commands.executeCommand('workbench.action.reloadWindow'));
 			vscode.commands.registerCommand('extension.justBeatIt', (command,type, argument:string, reserved1:string|undefined,) => {
 				const absolutePath = path.resolve(rootPath, command);
 
 				let newargs = '';
 				if(argument){
 					newargs = argument.replace('${rootPath}', rootPath);
-				}else{
-					newargs = argument;
+				}
+
+				if(command){
+					command = command.replace('${rootPath}', rootPath);
 				}
 
 				newargs = path.resolve(newargs);
