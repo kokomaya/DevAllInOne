@@ -13,10 +13,13 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 	private AlljsonData:any;  // debug
 	private localJsonData;  // debug
 	private workspace;
-	constructor(private workspaceRoot: string | undefined) {
+	private mergeFlag;
+	constructor(private workspaceRoot: string | undefined, settingPath:string|undefined, mergeFlag:boolean|undefined) {
+		let jsonFileCollector:string[] = [];
 		if(workspaceRoot){
 			const jsonFilePath = path.join(workspaceRoot, './conf/config.json');
-			const localJsonFilePath = path.join(workspaceRoot, './conf/config_local.json')
+			const localJsonFilePath = path.join(workspaceRoot, './conf/config_local.json');
+
 			if (pathExists(jsonFilePath)) {
 				this.AlljsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
 				
@@ -30,11 +33,27 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 				this.AlljsonData = merge(this.AlljsonData, this.localJsonData);
 			}
 
-			//Init json item path
-			this.initPathFromJson(this.AlljsonData, "");
-
 			this.workspace = workspaceRoot;
+			this.mergeFlag = mergeFlag;
 		}
+
+		if(settingPath){
+			const pathArray = settingPath.split(';').map(path => path.trim());
+			jsonFileCollector = jsonFileCollector.concat(pathArray);
+
+			jsonFileCollector.forEach((json)=>{
+				if(pathExists(json) && mergeFlag){
+					const settingJson = JSON.parse(fs.readFileSync(json, 'utf-8'));
+					this.AlljsonData = merge(this.AlljsonData, settingJson);
+				}
+				else{
+					vscode.window.showInformationMessage("Cann't find:" + json);
+				}
+			});
+		}
+
+		//Init json item path
+		this.initPathFromJson(this.AlljsonData, "");
 	}
 	
 	refresh(): void {
@@ -47,7 +66,7 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 
 	getChildren(element?: PlayerItem): Thenable<PlayerItem[]> {
 		if (!this.workspaceRoot) {
-			vscode.window.showInformationMessage('No dependency in empty workspace');
+			//vscode.window.showInformationMessage('No dependency in empty workspace');
 			return Promise.resolve([]);
 		}
 		const packageJsonPath = ""; // intentionally assignment

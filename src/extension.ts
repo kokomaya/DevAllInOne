@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 import { JsonOutlineProvider } from './jsonOutline';
-import { DevPlayer, PlayerItem } from './rad6xxDevPlay';
+import { DevPlayer, PlayerItem } from './DevAllInOne';
 import { pathExists } from './utilities';
 import { exec } from 'child_process';
 import { spawn,ChildProcessWithoutNullStreams } from 'child_process';
@@ -14,17 +14,46 @@ import { spawn,ChildProcessWithoutNullStreams } from 'child_process';
 export function activate(context: vscode.ExtensionContext) {
 	const rootPath = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
 		? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
+
+	let disposable = vscode.commands.registerCommand('DevAllInOne.selectJsonFile', async () => {
+		const options: vscode.OpenDialogOptions = {
+			canSelectFiles: true,
+			canSelectFolders: false,
+			canSelectMany: true,
+			openLabel: 'Select',
+			filters: {
+			'JSON files': ['json']
+			}
+		};
 	
+		const fileUri = await vscode.window.showOpenDialog(options);
+		if (fileUri && fileUri.length > 0) {
+			let selectedPath:string;
+			selectedPath = fileUri[0].fsPath + '';
+			for(let i = 1 ; i < fileUri.length; i++){
+				selectedPath = selectedPath + ';' + fileUri[i].fsPath;
+			}
+			const config = vscode.workspace.getConfiguration();
+			await config.update('DevAllInOne.jsonFilePath', selectedPath, vscode.ConfigurationTarget.Global);
+			vscode.window.showInformationMessage(`JSON file selected: ${selectedPath}`);
+		}
+		});
+
 	if (rootPath !== undefined) {  
+		const config = vscode.workspace.getConfiguration();
+		const selectedPath = config.get<string>('DevAllInOne.jsonFilePath');
+		const mergeSettingFlag = config.get<boolean>('DevAllInOne.jsonMerge');
+		
+		//console.log(`Selected JSON file path: ${selectedPath} ${mergeSettingFlag}`);
 		const workspaceName: string = path.basename(rootPath as string); 
 		const jsonFilePath = path.join(rootPath, './conf/config.json');
 		const localJsonFilePath = path.join(rootPath, './conf/config_local.json')
-		vscode.commands.registerCommand('rad6xxDevPlay.refreshEntry', () => vscode.commands.executeCommand('workbench.action.reloadWindow'));
+		vscode.commands.registerCommand('DevAllInOne.refreshEntry', () => vscode.commands.executeCommand('workbench.action.reloadWindow'));
 		if (pathExists(jsonFilePath) || pathExists(localJsonFilePath)) {
 			// Samples of `window.registerTreeDataProvider`
-			const radPlayerInstance = new DevPlayer(rootPath);
-			vscode.window.registerTreeDataProvider('rad6xxDevPlay', radPlayerInstance);
-			//vscode.commands.registerCommand('rad6xxDevPlay.refreshEntry', () => radPlayerInstance.refresh());
+			const radPlayerInstance = new DevPlayer(rootPath, selectedPath, mergeSettingFlag);
+			vscode.window.registerTreeDataProvider('DevAllInOne', radPlayerInstance);
+			//vscode.commands.registerCommand('DevAllInOne.refreshEntry', () => radPlayerInstance.refresh());
 			vscode.commands.registerCommand('extension.justBeatIt', (command,type, argument:string, reserved1:string|undefined,) => {
 				const absolutePath = path.resolve(rootPath, command);
 
@@ -92,35 +121,50 @@ export function activate(context: vscode.ExtensionContext) {
 						} else if (process.platform === 'linux') {
 							dirCmd = `xdg-open ${absolutePath}`;
 						}
-						exec(dirCmd, (err) => {
-							if (err) {
-								vscode.window.showErrorMessage(`Failed to open folder: ${err.message}`);
+						// exec(dirCmd, (err) => {
+						// 	if (err) {
+						// 		vscode.window.showErrorMessage(`Failed to open folder: ${err.message}`);
+						// 	}
+						// });
+						exec(`start "" "${absolutePath}"`, (error, stdout, stderr) => {
+							if (error) {
+							  //console.error(`Error opening folder: ${error.message}`);
+							  vscode.window.showErrorMessage(`Failed to open folder: ${error}`);
+							  return;
 							}
-						});
+							if (stderr) {
+							  //console.error(`Error: ${stderr}`);
+							  vscode.window.showErrorMessage(`Failed to open folder: ${stderr}`);
+							  return;
+							}
+							//console.log(`Folder opened successfully: ${stdout}`);
+						  });
 					}
 				}
 			
 			});
-			vscode.commands.registerCommand('rad6xxDevPlay.addEntry', () => vscode.window.showInformationMessage(`AddEntry feature is not suported yet!`));
-			vscode.commands.registerCommand('rad6xxDevPlay.editEntry', (node: PlayerItem) => vscode.window.showInformationMessage(`EditEntry feature is not suported yet!`));
-			vscode.commands.registerCommand('rad6xxDevPlay.deleteEntry', (node: PlayerItem) => vscode.window.showInformationMessage(`DeleteEntry feature is not suported yet!`));
+			vscode.commands.registerCommand('DevAllInOne.addEntry', () => vscode.window.showInformationMessage(`AddEntry feature is not suported yet!`));
+			vscode.commands.registerCommand('DevAllInOne.editEntry', (node: PlayerItem) => vscode.window.showInformationMessage(`EditEntry feature is not suported yet!`));
+			vscode.commands.registerCommand('DevAllInOne.deleteEntry', (node: PlayerItem) => vscode.window.showInformationMessage(`DeleteEntry feature is not suported yet!`));
 
 
-			const jsonOutlineProvider = new JsonOutlineProvider(context);
-			vscode.window.registerTreeDataProvider('jsonOutline', jsonOutlineProvider);
-			vscode.commands.registerCommand('jsonOutline.refresh', () => jsonOutlineProvider.refresh());
-			vscode.commands.registerCommand('jsonOutline.refreshNode', offset => jsonOutlineProvider.refresh(offset));
-			vscode.commands.registerCommand('jsonOutline.renameNode', args => {
-				let offset = undefined;
-				if (args.selectedTreeItems && args.selectedTreeItems.length) {
-					offset = args.selectedTreeItems[0];
-				} else if (typeof args === 'number') {
-					offset = args;
-				}
-				if (offset) {
-					jsonOutlineProvider.rename(offset);
-				}
-			});
+
+
+			// const jsonOutlineProvider = new JsonOutlineProvider(context);
+			// vscode.window.registerTreeDataProvider('jsonOutline', jsonOutlineProvider);
+			// vscode.commands.registerCommand('jsonOutline.refresh', () => jsonOutlineProvider.refresh());
+			// vscode.commands.registerCommand('jsonOutline.refreshNode', offset => jsonOutlineProvider.refresh(offset));
+			// vscode.commands.registerCommand('jsonOutline.renameNode', args => {
+			// 	let offset = undefined;
+			// 	if (args.selectedTreeItems && args.selectedTreeItems.length) {
+			// 		offset = args.selectedTreeItems[0];
+			// 	} else if (typeof args === 'number') {
+			// 		offset = args;
+			// 	}
+			// 	if (offset) {
+			// 		jsonOutlineProvider.rename(offset);
+			// 	}
+			// });
 			//vscode.commands.registerCommand('extension.openJsonSelection', range => jsonOutlineProvider.select(range));
 		}
 		else{
@@ -173,5 +217,7 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		});
 	}
+
+	context.subscriptions.push(disposable);
 
 }

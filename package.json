@@ -1,7 +1,7 @@
 {
 	"name": "DevAllInOne",
 	"displayName": "DevAllInOne",
-	"description": "Make all develop environment in one workspace",
+	"description": "Make all develop environments in one workspace",
 	"version": "0.0.6",
 	"publisher": "CSSDC-ADAS",
 	"private": true,
@@ -35,7 +35,7 @@
 		"views": {
 			"package-explorer": [
 				{
-					"id": "rad6xxDevPlay",
+					"id": "DevAllInOne",
 					"name": "Rad6xx DevPlay",
 					"icon": "media/dep.svg",
 					"contextualTitle": "Rad6xx DevPlay"
@@ -51,7 +51,11 @@
 		},
 		"commands": [
 			{
-				"command": "rad6xxDevPlay.refreshEntry",
+				"command": "DevAllInOne.selectJsonFile",
+				"title": "DevAllInOne:Select json file"
+			},
+			{
+				"command": "DevAllInOne.refreshEntry",
 				"title": "Refresh",
 				"icon": {
 					"light": "resources/light/refresh.svg",
@@ -60,11 +64,11 @@
 				"detail": {}
 			},
 			{
-				"command": "rad6xxDevPlay.addEntry",
+				"command": "DevAllInOne.addEntry",
 				"title": "Add"
 			},
 			{
-				"command": "rad6xxDevPlay.editEntry",
+				"command": "DevAllInOne.editEntry",
 				"title": "Edit",
 				"icon": {
 					"light": "resources/light/edit.svg",
@@ -72,7 +76,7 @@
 				}
 			},
 			{
-				"command": "rad6xxDevPlay.deleteEntry",
+				"command": "DevAllInOne.deleteEntry",
 				"title": "Delete"
 			},
 			{
@@ -111,8 +115,8 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "rad6xxDevPlay.refreshEntry",
-					"when": "view == rad6xxDevPlay",
+					"command": "DevAllInOne.refreshEntry",
+					"when": "view == DevAllInOne",
 					"group": "navigation"
 				},
 				{
@@ -120,8 +124,8 @@
 					"when": "view == jsonOutline"
 				},
 				{
-					"command": "rad6xxDevPlay.addEntry",
-					"when": "view == rad6xxDevPlay"
+					"command": "DevAllInOne.addEntry",
+					"when": "view == DevAllInOne"
 				},
 				{
 					"command": "jsonOutline.refresh",
@@ -131,13 +135,13 @@
 			],
 			"view/item/context": [
 				{
-					"command": "rad6xxDevPlay.editEntry",
-					"when": "view == rad6xxDevPlay && viewItem == dependency",
+					"command": "DevAllInOne.editEntry",
+					"when": "view == DevAllInOne && viewItem == dependency",
 					"group": "inline"
 				},
 				{
-					"command": "rad6xxDevPlay.deleteEntry",
-					"when": "view == rad6xxDevPlay && viewItem == dependency"
+					"command": "DevAllInOne.deleteEntry",
+					"when": "view == DevAllInOne && viewItem == dependency"
 				},
 				{
 					"command": "jsonOutline.renameNode",
@@ -157,14 +161,21 @@
 		},
 		"configuration": [
 			{
-				"title": "JSON Outline",
+				"type": "object",
 				"properties": {
-					"jsonOutline.autorefresh": {
-						"type": "boolean",
-						"description": "Auto refresh the JSON outline view when the contents of the json file change.",
-						"default": false
-					}
+				  "DevAllInOne.jsonFilePath": {
+					"type": "string",
+					"default": "",
+					"description": "Select json file(s) for the setting, muptiple selections are seperated by semicolon."
+				  },
+				  "DevAllInOne.jsonMerge": {
+					"type": "boolean",
+					"description": "Merge setting json file to workspace json, in spite of the existence file /conf/config*.json.",
+					"default": true
 				}
+				}
+				
+			  
 			}
 		]
 	},
