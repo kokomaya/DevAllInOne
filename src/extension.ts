@@ -45,11 +45,11 @@ export function activate(context: vscode.ExtensionContext) {
 		const mergeSettingFlag = config.get<boolean>('DevAllInOne.jsonMerge');
 		
 		//console.log(`Selected JSON file path: ${selectedPath} ${mergeSettingFlag}`);
-		const workspaceName: string = path.basename(rootPath as string); 
+		//const workspaceName: string = path.basename(rootPath as string); 
 		const jsonFilePath = path.join(rootPath, './conf/config.json');
 		const localJsonFilePath = path.join(rootPath, './conf/config_local.json')
 		vscode.commands.registerCommand('DevAllInOne.refreshEntry', () => vscode.commands.executeCommand('workbench.action.reloadWindow'));
-		if (pathExists(jsonFilePath) || pathExists(localJsonFilePath)) {
+		if (pathExists(jsonFilePath) || pathExists(localJsonFilePath) || mergeSettingFlag) {
 			// Samples of `window.registerTreeDataProvider`
 			const radPlayerInstance = new DevPlayer(rootPath, selectedPath, mergeSettingFlag);
 			vscode.window.registerTreeDataProvider('DevAllInOne', radPlayerInstance);

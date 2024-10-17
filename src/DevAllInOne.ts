@@ -12,8 +12,8 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 	private pathToItemMap: Map<string|null, PlayerItem|undefined> = new Map();
 	private AlljsonData:any;  // debug
 	private localJsonData;  // debug
-	private workspace;
-	private mergeFlag;
+	//private workspace;
+	//private mergeFlag;
 	constructor(private workspaceRoot: string | undefined, settingPath:string|undefined, mergeFlag:boolean|undefined) {
 		let jsonFileCollector:string[] = [];
 		if(workspaceRoot){
@@ -24,17 +24,17 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 				this.AlljsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
 				
 			}
-			if (pathExists(jsonFilePath)) {
+			if (pathExists(localJsonFilePath)) {
 				this.localJsonData = JSON.parse(fs.readFileSync(localJsonFilePath, 'utf-8'));
 			}
 			
 			// If local and global json file both exsit, merge them together
-			if(this.AlljsonData && this.localJsonData){
+			if(this.AlljsonData || this.localJsonData){
 				this.AlljsonData = merge(this.AlljsonData, this.localJsonData);
 			}
 
-			this.workspace = workspaceRoot;
-			this.mergeFlag = mergeFlag;
+			//this.workspace = workspaceRoot;
+			//this.mergeFlag = mergeFlag;
 		}
 
 		if(settingPath){
