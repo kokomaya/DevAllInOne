@@ -24,8 +24,14 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 				this.AlljsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
 				
 			}
+			else{
+				this.AlljsonData = {};
+			}
 			if (pathExists(localJsonFilePath)) {
 				this.localJsonData = JSON.parse(fs.readFileSync(localJsonFilePath, 'utf-8'));
+			}
+			else{
+				this.localJsonData = {};
 			}
 			
 			// If local and global json file both exsit, merge them together
