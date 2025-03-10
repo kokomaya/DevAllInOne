@@ -55,6 +55,18 @@
 				"title": "DevAllInOne:Select json file"
 			},
 			{
+				"command": "DevAllInOne.showRegexpLookupTable",
+				"title": "DevAllInOne:Show ReEx Lookup Table"
+			},
+			{
+				"command": "DevAllInOne.showAsciiLookupTable",
+				"title": "DevAllInOne:Show ASCII Lookup Table"
+			},
+            {
+                "command": "DevAllInOne.showMenu",
+                "title": "显示菜单"
+            },
+			{
 				"command": "DevAllInOne.refreshEntry",
 				"title": "Refresh",
 				"icon": {

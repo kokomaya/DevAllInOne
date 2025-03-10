@@ -9,6 +9,8 @@ import { DevPlayer, PlayerItem } from './DevAllInOne';
 import { pathExists } from './utilities';
 import { exec } from 'child_process';
 import { spawn,ChildProcessWithoutNullStreams } from 'child_process';
+import { getWebviewContent_rex_lut,getWebviewContent_ascii_lut } from './StaticView';
+
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -38,6 +40,58 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage(`JSON file selected: ${selectedPath}`);
 		}
 		});
+	    // 创建状态栏项
+		const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+		statusBarItem.text = "$(book)"; // 使用内置图标
+		statusBarItem.tooltip = "DevAllInOne"; // 鼠标悬停时的提示
+		statusBarItem.command = 'DevAllInOne.showMenu'; // 绑定命令
+	
+		statusBarItem.show();
+	
+		// 注册命令
+		const showMenuCommand = vscode.commands.registerCommand('DevAllInOne.showMenu',  () => {
+			showQuickPickMenu();
+		});
+	
+	let disposable_rex_lut = vscode.commands.registerCommand('DevAllInOne.showRegexpLookupTable', () => {
+		const panel = vscode.window.createWebviewPanel(
+			'regexpLookupTable',
+			'正则表达式查找表',
+			vscode.ViewColumn.One,
+            {
+                enableScripts: true,
+                retainContextWhenHidden: true
+            }
+		);
+
+		panel.webview.html = getWebviewContent_rex_lut();
+
+		// 监听 Webview 的快捷键操作，触发 VSCode 查找框
+		panel.webview.onDidReceiveMessage((message) => {
+			if (message.command === 'triggerFind') {
+				vscode.commands.executeCommand('actions.find');  // 触发 VSCode 的查找框
+			}
+		});
+	});
+
+	let disposable_ascii = vscode.commands.registerCommand('DevAllInOne.showAsciiLookupTable', () => {
+		const panel = vscode.window.createWebviewPanel(
+			'AsciiLookupTable',
+			'ASCII码表',
+			vscode.ViewColumn.One,
+            {
+                enableScripts: true,
+                retainContextWhenHidden: true
+            }
+		);
+
+		panel.webview.html = getWebviewContent_ascii_lut();
+	});
+
+
+    
+
+	
 
 	if (rootPath !== undefined) {  
 		const config = vscode.workspace.getConfiguration();
@@ -219,5 +273,19 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	context.subscriptions.push(disposable);
+	context.subscriptions.push(disposable_rex_lut);
+	context.subscriptions.push(disposable_ascii);
+	context.subscriptions.push(statusBarItem, showMenuCommand);
+	
 
 }
+async function showQuickPickMenu() {
+    const items = [
+        { label: '$(regex) 正则查询表', command: 'DevAllInOne.showRegexpLookupTable' },
+        { label: '$(code) ASCII码表', command: 'DevAllInOne.showAsciiLookupTable' }
+    ];
+
+    const selected = await vscode.window.showQuickPick(items);
+    selected && vscode.commands.executeCommand(selected.command);
+}
+export function deactivate() {}

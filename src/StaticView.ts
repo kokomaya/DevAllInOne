@@ -1,0 +1,2200 @@
+export function getWebviewContent_ascii_lut(){
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extended ASCII Table</title>
+    <script>
+    document.addEventListener('keydown', (event) => {
+        if (event.ctrlKey && event.key === 'f') {
+            // 向扩展发送消息，触发 VSCode 查找框
+            vscode.postMessage({
+                command: 'triggerFind'
+            });
+        }
+    });
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            color: #222;
+        }
+        th {
+            position: sticky;
+            background: #333;
+            color: white;
+        }
+        code {
+            background: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #000;
+        }
+    </style>
+</head>
+<table>
+	<caption>
+		标准 ASCII 码对照表（十进制0-31背景为控制字符，其余为为可显示字符）</caption>
+    <thead>
+		<tr>
+			<th>
+				二进制</th>
+			<th>
+				八进制</th>
+			<th>
+				十进制</th>
+			<th>
+				十六进制</th>
+			<th>
+				字符/缩写</th>
+			<th>
+				解释</th>
+		</tr>
+    </thead>
+	<tbody>
+		<tr class="bg-ctrl">
+			<td>
+				00000000</td>
+			<td>
+				000</td>
+			<td>
+				0</td>
+			<td>
+				00</td>
+			<td>
+				NUL (NULL)</td>
+			<td>
+				空字符</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00000001</td>
+			<td>
+				001</td>
+			<td>
+				1</td>
+			<td>
+				01</td>
+			<td>
+				SOH (Start Of Headling)</td>
+			<td>
+				标题开始</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00000010</td>
+			<td>
+				002</td>
+			<td>
+				2</td>
+			<td>
+				02</td>
+			<td>
+				STX (Start Of Text)</td>
+			<td>
+				正文开始</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00000011</td>
+			<td>
+				003</td>
+			<td>
+				3</td>
+			<td>
+				03</td>
+			<td>
+				ETX (End Of Text)</td>
+			<td>
+				正文结束</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00000100</td>
+			<td>
+				004</td>
+			<td>
+				4</td>
+			<td>
+				04</td>
+			<td>
+				EOT (End Of Transmission)</td>
+			<td>
+				传输结束</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00000101</td>
+			<td>
+				005</td>
+			<td>
+				5</td>
+			<td>
+				05</td>
+			<td>
+				ENQ (Enquiry)</td>
+			<td>
+				请求</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00000110</td>
+			<td>
+				006</td>
+			<td>
+				6</td>
+			<td>
+				06</td>
+			<td>
+				ACK (Acknowledge)</td>
+			<td>
+				回应/响应/收到通知</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00000111</td>
+			<td>
+				007</td>
+			<td>
+				7</td>
+			<td>
+				07</td>
+			<td>
+				BEL (Bell)</td>
+			<td>
+				响铃</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00001000</td>
+			<td>
+				010</td>
+			<td>
+				8</td>
+			<td>
+				08</td>
+			<td>
+				BS (Backspace)</td>
+			<td>
+				退格</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00001001</td>
+			<td>
+				011</td>
+			<td>
+				9</td>
+			<td>
+				09</td>
+			<td>
+				HT (Horizontal Tab)</td>
+			<td>
+				水平制表符</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00001010</td>
+			<td>
+				012</td>
+			<td>
+				10</td>
+			<td>
+				0A</td>
+			<td>
+				LF/NL(Line Feed/New Line)</td>
+			<td>
+				换行键</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00001011</td>
+			<td>
+				013</td>
+			<td>
+				11</td>
+			<td>
+				0B</td>
+			<td>
+				VT (Vertical Tab)</td>
+			<td>
+				垂直制表符</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00001100</td>
+			<td>
+				014</td>
+			<td>
+				12</td>
+			<td>
+				0C</td>
+			<td>
+				FF/NP (Form Feed/New Page)</td>
+			<td>
+				换页键</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00001101</td>
+			<td>
+				015</td>
+			<td>
+				13</td>
+			<td>
+				0D</td>
+			<td>
+				CR (Carriage Return)</td>
+			<td>
+				回车键</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00001110</td>
+			<td>
+				016</td>
+			<td>
+				14</td>
+			<td>
+				0E</td>
+			<td>
+				SO (Shift Out)</td>
+			<td>
+				不用切换</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00001111</td>
+			<td>
+				017</td>
+			<td>
+				15</td>
+			<td>
+				0F</td>
+			<td>
+				SI (Shift In)</td>
+			<td>
+				启用切换</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00010000</td>
+			<td>
+				020</td>
+			<td>
+				16</td>
+			<td>
+				10</td>
+			<td>
+				DLE (Data Link Escape)</td>
+			<td>
+				数据链路转义</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00010001</td>
+			<td>
+				021</td>
+			<td>
+				17</td>
+			<td>
+				11</td>
+			<td>
+				DC1/XON<br>
+				(Device Control 1/Transmission On)</td>
+			<td>
+				设备控制1/传输开始</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00010010</td>
+			<td>
+				022</td>
+			<td>
+				18</td>
+			<td>
+				12</td>
+			<td>
+				DC2 (Device Control 2)</td>
+			<td>
+				设备控制2</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00010011</td>
+			<td>
+				023</td>
+			<td>
+				19</td>
+			<td>
+				13</td>
+			<td>
+				DC3/XOFF<br>
+				(Device Control 3/Transmission Off)</td>
+			<td>
+				设备控制3/传输中断</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00010100</td>
+			<td>
+				024</td>
+			<td>
+				20</td>
+			<td>
+				14</td>
+			<td>
+				DC4 (Device Control 4)</td>
+			<td>
+				设备控制4</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00010101</td>
+			<td>
+				025</td>
+			<td>
+				21</td>
+			<td>
+				15</td>
+			<td>
+				NAK (Negative Acknowledge)</td>
+			<td>
+				无响应/非正常响应/拒绝接收</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00010110</td>
+			<td>
+				026</td>
+			<td>
+				22</td>
+			<td>
+				16</td>
+			<td>
+				SYN (Synchronous Idle)</td>
+			<td>
+				同步空闲</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00010111</td>
+			<td>
+				027</td>
+			<td>
+				23</td>
+			<td>
+				17</td>
+			<td>
+				ETB (End of Transmission Block)</td>
+			<td>
+				传输块结束/块传输终止</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00011000</td>
+			<td>
+				030</td>
+			<td>
+				24</td>
+			<td>
+				18</td>
+			<td>
+				CAN (Cancel)</td>
+			<td>
+				取消</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00011001</td>
+			<td>
+				031</td>
+			<td>
+				25</td>
+			<td>
+				19</td>
+			<td>
+				EM (End of Medium)</td>
+			<td>
+				已到介质末端/介质存储已满/介质中断</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00011010</td>
+			<td>
+				032</td>
+			<td>
+				26</td>
+			<td>
+				1A</td>
+			<td>
+				SUB (Substitute)</td>
+			<td>
+				替补/替换</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00011011</td>
+			<td>
+				033</td>
+			<td>
+				27</td>
+			<td>
+				1B</td>
+			<td>
+				ESC (Escape)</td>
+			<td>
+				逃离/取消</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00011100</td>
+			<td>
+				034</td>
+			<td>
+				28</td>
+			<td>
+				1C</td>
+			<td>
+				FS (File Separator)</td>
+			<td>
+				文件分割符</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00011101</td>
+			<td>
+				035</td>
+			<td>
+				29</td>
+			<td>
+				1D</td>
+			<td>
+				GS (Group Separator)</td>
+			<td>
+				组分隔符/分组符</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00011110</td>
+			<td>
+				036</td>
+			<td>
+				30</td>
+			<td>
+				1E</td>
+			<td>
+				RS (Record Separator)</td>
+			<td>
+				记录分离符</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				00011111</td>
+			<td>
+				037</td>
+			<td>
+				31</td>
+			<td>
+				1F</td>
+			<td>
+				US (Unit Separator)</td>
+			<td>
+				单元分隔符</td>
+		</tr>
+		<tr>
+			<td>
+				00100000</td>
+			<td>
+				040</td>
+			<td>
+				32</td>
+			<td>
+				20</td>
+			<td>
+				(Space)</td>
+			<td>
+				空格</td>
+		</tr>
+		<tr>
+			<td>
+				00100001</td>
+			<td>
+				041</td>
+			<td>
+				33</td>
+			<td>
+				21</td>
+			<td>
+				!</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00100010</td>
+			<td>
+				042</td>
+			<td>
+				34</td>
+			<td>
+				22</td>
+			<td>
+				"</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00100011</td>
+			<td>
+				043</td>
+			<td>
+				35</td>
+			<td>
+				23</td>
+			<td>
+				#</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00100100</td>
+			<td>
+				044</td>
+			<td>
+				36</td>
+			<td>
+				24</td>
+			<td>
+				$</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00100101</td>
+			<td>
+				045</td>
+			<td>
+				37</td>
+			<td>
+				25</td>
+			<td>
+				%</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00100110</td>
+			<td>
+				046</td>
+			<td>
+				38</td>
+			<td>
+				26</td>
+			<td>
+				&amp;</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00100111</td>
+			<td>
+				047</td>
+			<td>
+				39</td>
+			<td>
+				27</td>
+			<td>
+				'</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00101000</td>
+			<td>
+				050</td>
+			<td>
+				40</td>
+			<td>
+				28</td>
+			<td>
+				(</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00101001</td>
+			<td>
+				051</td>
+			<td>
+				41</td>
+			<td>
+				29</td>
+			<td>
+				)</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00101010</td>
+			<td>
+				052</td>
+			<td>
+				42</td>
+			<td>
+				2A</td>
+			<td>
+				*</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00101011</td>
+			<td>
+				053</td>
+			<td>
+				43</td>
+			<td>
+				2B</td>
+			<td>
+				+</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00101100</td>
+			<td>
+				054</td>
+			<td>
+				44</td>
+			<td>
+				2C</td>
+			<td>
+				,</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00101101</td>
+			<td>
+				055</td>
+			<td>
+				45</td>
+			<td>
+				2D</td>
+			<td>
+				-</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00101110</td>
+			<td>
+				056</td>
+			<td>
+				46</td>
+			<td>
+				2E</td>
+			<td>
+				.</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00101111</td>
+			<td>
+				057</td>
+			<td>
+				47</td>
+			<td>
+				2F</td>
+			<td>
+				/</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00110000</td>
+			<td>
+				060</td>
+			<td>
+				48</td>
+			<td>
+				30</td>
+			<td>
+				0</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00110001</td>
+			<td>
+				061</td>
+			<td>
+				49</td>
+			<td>
+				31</td>
+			<td>
+				1</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00110010</td>
+			<td>
+				062</td>
+			<td>
+				50</td>
+			<td>
+				32</td>
+			<td>
+				2</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00110011</td>
+			<td>
+				063</td>
+			<td>
+				51</td>
+			<td>
+				33</td>
+			<td>
+				3</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00110100</td>
+			<td>
+				064</td>
+			<td>
+				52</td>
+			<td>
+				34</td>
+			<td>
+				4</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00110101</td>
+			<td>
+				065</td>
+			<td>
+				53</td>
+			<td>
+				35</td>
+			<td>
+				5</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00110110</td>
+			<td>
+				066</td>
+			<td>
+				54</td>
+			<td>
+				36</td>
+			<td>
+				6</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00110111</td>
+			<td>
+				067</td>
+			<td>
+				55</td>
+			<td>
+				37</td>
+			<td>
+				7</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00111000</td>
+			<td>
+				070</td>
+			<td>
+				56</td>
+			<td>
+				38</td>
+			<td>
+				8</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00111001</td>
+			<td>
+				071</td>
+			<td>
+				57</td>
+			<td>
+				39</td>
+			<td>
+				9</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00111010</td>
+			<td>
+				072</td>
+			<td>
+				58</td>
+			<td>
+				3A</td>
+			<td>
+				:</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00111011</td>
+			<td>
+				073</td>
+			<td>
+				59</td>
+			<td>
+				3B</td>
+			<td>
+				;</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00111100</td>
+			<td>
+				074</td>
+			<td>
+				60</td>
+			<td>
+				3C</td>
+			<td>
+				&lt;</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00111101</td>
+			<td>
+				075</td>
+			<td>
+				61</td>
+			<td>
+				3D</td>
+			<td>
+				=</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00111110</td>
+			<td>
+				076</td>
+			<td>
+				62</td>
+			<td>
+				3E</td>
+			<td>
+				&gt;</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				00111111</td>
+			<td>
+				077</td>
+			<td>
+				63</td>
+			<td>
+				3F</td>
+			<td>
+				?</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01000000</td>
+			<td>
+				100</td>
+			<td>
+				64</td>
+			<td>
+				40</td>
+			<td>
+				@</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01000001</td>
+			<td>
+				101</td>
+			<td>
+				65</td>
+			<td>
+				41</td>
+			<td>
+				A</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01000010</td>
+			<td>
+				102</td>
+			<td>
+				66</td>
+			<td>
+				42</td>
+			<td>
+				B</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01000011</td>
+			<td>
+				103</td>
+			<td>
+				67</td>
+			<td>
+				43</td>
+			<td>
+				C</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01000100</td>
+			<td>
+				104</td>
+			<td>
+				68</td>
+			<td>
+				44</td>
+			<td>
+				D</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01000101</td>
+			<td>
+				105</td>
+			<td>
+				69</td>
+			<td>
+				45</td>
+			<td>
+				E</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01000110</td>
+			<td>
+				106</td>
+			<td>
+				70</td>
+			<td>
+				46</td>
+			<td>
+				F</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01000111</td>
+			<td>
+				107</td>
+			<td>
+				71</td>
+			<td>
+				47</td>
+			<td>
+				G</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01001000</td>
+			<td>
+				110</td>
+			<td>
+				72</td>
+			<td>
+				48</td>
+			<td>
+				H</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01001001</td>
+			<td>
+				111</td>
+			<td>
+				73</td>
+			<td>
+				49</td>
+			<td>
+				I</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01001010</td>
+			<td>
+				112</td>
+			<td>
+				74</td>
+			<td>
+				4A</td>
+			<td>
+				J</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01001011</td>
+			<td>
+				113</td>
+			<td>
+				75</td>
+			<td>
+				4B</td>
+			<td>
+				K</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01001100</td>
+			<td>
+				114</td>
+			<td>
+				76</td>
+			<td>
+				4C</td>
+			<td>
+				L</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01001101</td>
+			<td>
+				115</td>
+			<td>
+				77</td>
+			<td>
+				4D</td>
+			<td>
+				M</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01001110</td>
+			<td>
+				116</td>
+			<td>
+				78</td>
+			<td>
+				4E</td>
+			<td>
+				N</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01001111</td>
+			<td>
+				117</td>
+			<td>
+				79</td>
+			<td>
+				4F</td>
+			<td>
+				O</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01010000</td>
+			<td>
+				120</td>
+			<td>
+				80</td>
+			<td>
+				50</td>
+			<td>
+				P</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01010001</td>
+			<td>
+				121</td>
+			<td>
+				81</td>
+			<td>
+				51</td>
+			<td>
+				Q</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01010010</td>
+			<td>
+				122</td>
+			<td>
+				82</td>
+			<td>
+				52</td>
+			<td>
+				R</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01010011</td>
+			<td>
+				123</td>
+			<td>
+				83</td>
+			<td>
+				53</td>
+			<td>
+				S</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01010100</td>
+			<td>
+				124</td>
+			<td>
+				84</td>
+			<td>
+				54</td>
+			<td>
+				T</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01010101</td>
+			<td>
+				125</td>
+			<td>
+				85</td>
+			<td>
+				55</td>
+			<td>
+				U</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01010110</td>
+			<td>
+				126</td>
+			<td>
+				86</td>
+			<td>
+				56</td>
+			<td>
+				V</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01010111</td>
+			<td>
+				127</td>
+			<td>
+				87</td>
+			<td>
+				57</td>
+			<td>
+				W</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01011000</td>
+			<td>
+				130</td>
+			<td>
+				88</td>
+			<td>
+				58</td>
+			<td>
+				X</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01011001</td>
+			<td>
+				131</td>
+			<td>
+				89</td>
+			<td>
+				59</td>
+			<td>
+				Y</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01011010</td>
+			<td>
+				132</td>
+			<td>
+				90</td>
+			<td>
+				5A</td>
+			<td>
+				Z</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01011011</td>
+			<td>
+				133</td>
+			<td>
+				91</td>
+			<td>
+				5B</td>
+			<td>
+				[</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01011100</td>
+			<td>
+				134</td>
+			<td>
+				92</td>
+			<td>
+				5C</td>
+			<td>
+				\</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01011101</td>
+			<td>
+				135</td>
+			<td>
+				93</td>
+			<td>
+				5D</td>
+			<td>
+				]</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01011110</td>
+			<td>
+				136</td>
+			<td>
+				94</td>
+			<td>
+				5E</td>
+			<td>
+				^</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01011111</td>
+			<td>
+				137</td>
+			<td>
+				95</td>
+			<td>
+				5F</td>
+			<td>
+				_</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01100000</td>
+			<td>
+				140</td>
+			<td>
+				96</td>
+			<td>
+				60</td>
+			<td>
+				</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01100001</td>
+			<td>
+				141</td>
+			<td>
+				97</td>
+			<td>
+				61</td>
+			<td>
+				a</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01100010</td>
+			<td>
+				142</td>
+			<td>
+				98</td>
+			<td>
+				62</td>
+			<td>
+				b</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01100011</td>
+			<td>
+				143</td>
+			<td>
+				99</td>
+			<td>
+				63</td>
+			<td>
+				c</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01100100</td>
+			<td>
+				144</td>
+			<td>
+				100</td>
+			<td>
+				64</td>
+			<td>
+				d</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01100101</td>
+			<td>
+				145</td>
+			<td>
+				101</td>
+			<td>
+				65</td>
+			<td>
+				e</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01100110</td>
+			<td>
+				146</td>
+			<td>
+				102</td>
+			<td>
+				66</td>
+			<td>
+				f</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01100111</td>
+			<td>
+				147</td>
+			<td>
+				103</td>
+			<td>
+				67</td>
+			<td>
+				g</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01101000</td>
+			<td>
+				150</td>
+			<td>
+				104</td>
+			<td>
+				68</td>
+			<td>
+				h</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01101001</td>
+			<td>
+				151</td>
+			<td>
+				105</td>
+			<td>
+				69</td>
+			<td>
+				i</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01101010</td>
+			<td>
+				152</td>
+			<td>
+				106</td>
+			<td>
+				6A</td>
+			<td>
+				j</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01101011</td>
+			<td>
+				153</td>
+			<td>
+				107</td>
+			<td>
+				6B</td>
+			<td>
+				k</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01101100</td>
+			<td>
+				154</td>
+			<td>
+				108</td>
+			<td>
+				6C</td>
+			<td>
+				l</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01101101</td>
+			<td>
+				155</td>
+			<td>
+				109</td>
+			<td>
+				6D</td>
+			<td>
+				m</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01101110</td>
+			<td>
+				156</td>
+			<td>
+				110</td>
+			<td>
+				6E</td>
+			<td>
+				n</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01101111</td>
+			<td>
+				157</td>
+			<td>
+				111</td>
+			<td>
+				6F</td>
+			<td>
+				o</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01110000</td>
+			<td>
+				160</td>
+			<td>
+				112</td>
+			<td>
+				70</td>
+			<td>
+				p</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01110001</td>
+			<td>
+				161</td>
+			<td>
+				113</td>
+			<td>
+				71</td>
+			<td>
+				q</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01110010</td>
+			<td>
+				162</td>
+			<td>
+				114</td>
+			<td>
+				72</td>
+			<td>
+				r</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01110011</td>
+			<td>
+				163</td>
+			<td>
+				115</td>
+			<td>
+				73</td>
+			<td>
+				s</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01110100</td>
+			<td>
+				164</td>
+			<td>
+				116</td>
+			<td>
+				74</td>
+			<td>
+				t</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01110101</td>
+			<td>
+				165</td>
+			<td>
+				117</td>
+			<td>
+				75</td>
+			<td>
+				u</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01110110</td>
+			<td>
+				166</td>
+			<td>
+				118</td>
+			<td>
+				76</td>
+			<td>
+				v</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01110111</td>
+			<td>
+				167</td>
+			<td>
+				119</td>
+			<td>
+				77</td>
+			<td>
+				w</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01111000</td>
+			<td>
+				170</td>
+			<td>
+				120</td>
+			<td>
+				78</td>
+			<td>
+				x</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01111001</td>
+			<td>
+				171</td>
+			<td>
+				121</td>
+			<td>
+				79</td>
+			<td>
+				y</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01111010</td>
+			<td>
+				172</td>
+			<td>
+				122</td>
+			<td>
+				7A</td>
+			<td>
+				z</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01111011</td>
+			<td>
+				173</td>
+			<td>
+				123</td>
+			<td>
+				7B</td>
+			<td>
+				{</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01111100</td>
+			<td>
+				174</td>
+			<td>
+				124</td>
+			<td>
+				7C</td>
+			<td>
+				|</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01111101</td>
+			<td>
+				175</td>
+			<td>
+				125</td>
+			<td>
+				7D</td>
+			<td>
+				}</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr>
+			<td>
+				01111110</td>
+			<td>
+				176</td>
+			<td>
+				126</td>
+			<td>
+				7E</td>
+			<td>
+				~</td>
+			<td>
+				&nbsp;</td>
+		</tr>
+		<tr class="bg-ctrl">
+			<td>
+				01111111</td>
+			<td>
+				177</td>
+			<td>
+				127</td>
+			<td>
+				7F</td>
+			<td>
+				DEL (Delete)</td>
+			<td>
+				删除</td>
+		</tr>
+	</tbody>
+</table>
+</html>
+`
+}
+
+export 	function getWebviewContent_rex_lut() {
+    return `
+        <!DOCTYPE html>
+        <html lang="zh">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>正则表达式语法速查表</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    line-height: 1.6;
+                    margin: 20px;
+                    padding: 20px;
+                    background-color: #f4f4f4;
+                }
+                h2, h3 {
+                    color: #333;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 20px 0;
+                    background: white;
+                }
+                th, td {
+                    border: 1px solid #ddd;
+                    padding: 10px;
+                    text-align: left;
+                    color: #222;
+                }
+                th {
+                    background: #333;
+                    color: white;
+                }
+                code {
+                    background: #eee;
+                    padding: 2px 5px;
+                    border-radius: 3px;
+                    color: #000;
+                }
+            </style>
+        </head>
+        <body>
+            <h2><strong>正则表达式语法速查表</strong></h2>
+
+            <h3>1. 基础匹配</h3>
+            <table>
+                <tr>
+                    <th>语法</th><th>描述</th><th>示例</th><th>注意事项</th>
+                </tr>
+                <tr>
+                    <td><code>a</code></td>
+                    <td>匹配普通字符</td>
+                    <td><code>cat</code> → 匹配 "cat"</td>
+                    <td>区分大小写（默认）</td>
+                </tr>
+                <tr>
+                    <td><code>.</code></td>
+                    <td>匹配任意字符（除换行符）</td>
+                    <td><code>a.c</code> → "abc", "a c"</td>
+                    <td>使用 <code>s</code> 修饰符时包含换行符</td>
+                </tr>
+                <tr>
+                    <td><code>\\</code></td>
+                    <td>转义特殊字符</td>
+                    <td><code>\\.</code> → 匹配 "."</td>
+                    <td>转义 <code>\\</code> 需用 <code>\\</code>, 如匹配<code>.</code>时需要使用<code>\\.</code></td>
+                </tr>
+
+            </table>
+
+            <h3>2. 量词（重复匹配）</h3>
+            <table>
+                <tr>
+                    <th>语法</th><th>描述</th><th>示例</th><th>等效写法</th>
+                </tr>
+                <tr>
+                    <td><code>*</code></td>
+                    <td>匹配前一个元素 0 次或多次</td>
+                    <td><code>a*</code> → "", "a", "aaa"</td>
+                    <td><code>{0,}</code></td>
+                </tr>
+                <tr>
+                    <td><code>+</code></td>
+                    <td>匹配前一个元素 1 次或多次</td>
+                    <td><code>a+</code> → "a", "aaa"</td>
+                    <td><code>{1,}</code></td>
+                </tr>
+                <tr>
+                    <td><code>?</code></td>
+                    <td>匹配前一个元素 0 次或 1 次</td>
+                    <td><code>colou?r</code> → "color", "colour"</td>
+                    <td><code>{0,1}</code></td>
+                </tr>
+                <tr>
+                    <td><code>{n}</code></td>
+                    <td>匹配前一个元素恰好 n 次</td>
+                    <td><code>\\d{4}</code> → "2023"</td>
+                    <td>精确匹配</td>
+                </tr>
+                <tr>
+                    <td><code>{n,}</code></td>
+                    <td>匹配前一个元素至少 n 次</td>
+                    <td><code>\\d{3,}</code> → "123", "4567"</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><code>{n,m}</code></td>
+                    <td>匹配前一个元素 n 到 m 次</td>
+                    <td><code>a{2,4}</code> → "aa", "aaaa"</td>
+                    <td>贪婪匹配</td>
+                </tr>
+                <tr>
+                    <td><code>*?</code></td>
+                    <td><strong>懒惰模式</strong>（非贪婪匹配）</td>
+                    <td><code>&lt;div&gt;.*?&lt;/div&gt;</code> → 最短匹配</td>
+                    <td>与 <code>.*</code> 对比</td>
+                </tr>
+            </table>
+
+            <h3>3. 字符类</h3>
+            <table>
+                <tr>
+                    <th>语法</th><th>描述</th><th>示例</th><th>等效写法</th>
+                </tr>
+                <tr>
+                    <td><code>[abc]</code></td>
+                    <td>匹配括号内任意字符</td>
+                    <td><code>[aeiou]</code> → 匹配元音字母</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><code>[^abc]</code></td>
+                    <td>匹配不在括号内的任意字符</td>
+                    <td><code>[^0-9]</code> → 非数字字符</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td><code>\\d</code></td>
+                    <td>匹配数字（0-9）</td>
+                    <td><code>\\d+</code> → "123"</td>
+                    <td><code>[0-9]</code></td>
+                </tr>
+                <tr>
+                    <td><code>\\D</code></td>
+                    <td>匹配非数字字符</td>
+                    <td><code>\\D+</code> → "abc"</td>
+                    <td><code>[^0-9]</code></td>
+                </tr>
+                <tr>
+                    <td><code>\\w</code></td>
+                    <td>匹配单词字符（字母、数字、下划线）</td>
+                    <td><code>\\w+</code> → "user123"</td>
+                    <td><code>[a-zA-Z0-9_]</code></td>
+                </tr>
+                <tr>
+                    <td><code>\\W</code></td>
+                    <td>匹配非单词字符</td>
+                    <td><code>\\W</code> → "@"</td>
+                    <td><code>[^\\w]</code></td>
+                </tr>
+                <tr>
+                    <td><code>\\s</code></td>
+                    <td>匹配空白字符（空格、制表符等）</td>
+                    <td><code>\\s+</code> → "   "</td>
+                    <td><code>[ \\t\\n\\r\\f]</code></td>
+                </tr>
+                <tr>
+                    <td><code>\\S</code></td>
+                    <td>匹配非空白字符</td>
+                    <td><code>\\S+</code> → "Hello"</td>
+                    <td><code>[^\\s]</code></td>
+                </tr>
+            </table>
+
+            <h3>4. 定位符（边界匹配）</h3>
+            <table>
+                <tr>
+                    <th>语法</th><th>描述</th><th>示例</th><th>用途场景</th>
+                </tr>
+                <tr>
+                    <td><code>^</code></td>
+                    <td>匹配行首</td>
+                    <td><code>^Start</code> → 行首的 "Start"</td>
+                    <td>日志分析、数据校验</td>
+                </tr>
+                <tr>
+                    <td><code>$</code></td>
+                    <td>匹配行尾</td>
+                    <td><code>end$</code> → 行尾的 "end"</td>
+                    <td>同上</td>
+                </tr>
+                <tr>
+                    <td><code>\\b</code></td>
+                    <td>单词边界（字母与非字母间）</td>
+                    <td><code>\\bcat\\b</code> → 匹配 "cat" 不匹配 "category"</td>
+                    <td>精确单词匹配</td>
+                </tr>
+                <tr>
+                    <td><code>\\B</code></td>
+                    <td>非单词边界</td>
+                    <td><code>\\Bcat\\B</code> → 匹配 "category" 中的 "cat"</td>
+                    <td>子串匹配</td>
+                </tr>
+            </table>
+            <h3>5. 分组与引用</h3>
+            <table>
+                <tr>
+                    <th>语法</th><th>描述</th><th>示例</th><th>用途</th>
+                </tr>
+                <tr>
+                    <td><code>(exp)</code></td>
+                    <td>捕获分组并存储匹配内容</td>
+                    <td><code>(\\d{4})-(\\d{2})</code> → 提取年月</td>
+                    <td>数据提取、替换</td>
+                </tr>
+                <tr>
+                    <td><code>(?:exp)</code></td>
+                    <td>非捕获分组（不存储匹配内容）</td>
+                    <td><code>(?:\\d{3}-){2}\\d{4}</code> → 匹配电话号但不分组</td>
+                    <td>优化性能</td>
+                </tr>
+                <tr>
+                    <td><code>\\1, \\2</code></td>
+                    <td>引用捕获分组的内容</td>
+                    <td><code>(\\w+) \\1</code> → 匹配重复单词（如 "hello hello"）</td>
+                    <td>去重、模式验证</td>
+                </tr>
+            </table>
+
+            <h3>6. 断言（零宽断言）</h3>
+            <table>
+                <tr>
+                    <th>语法</th><th>描述</th><th>示例</th><th>用途</th>
+                </tr>
+                <tr>
+                    <td><code>(?=exp)</code></td>
+                    <td>正向先行断言:右侧需匹配 exp</td>
+                    <td><code>Windows(?=10|11)</code> → 匹配 "Windows" 后跟 10/11</td>
+                    <td>条件筛选</td>
+                </tr>
+                <tr>
+                    <td><code>(?!exp)</code></td>
+                    <td>负向先行断言:右侧不能匹配 exp</td>
+                    <td><code>\\d{3}(?!\\d)</code> → 匹配3位数字且后不接数字</td>
+                    <td>数据验证</td>
+                </tr>
+                <tr>
+                    <td><code>(?<=exp)</code></td>
+                    <td>正向后行断言:左侧需匹配 exp</td>
+                    <td><code>(?<=\\$)\\d+</code> → 匹配 "$100" 中的 "100</td>
+                    <td>提取特定值</td>
+                </tr>
+                <tr>
+                    <td><code>(?<!exp)</code></td>
+                    <td>负向后行断言:左侧不能匹配 exp</td>
+                    <td><code>(?<!192\.168)\\d+</code> →  → 排除内网IP</td>
+                    <td>安全过滤</td>
+                </tr>
+            </table>
+
+            <h3>7. 模式修饰符</h3>
+            <table>
+                <tr>
+                    <th>修饰符</th><th>描述</th><th>示例</th><th>支持语言</th>
+                </tr>
+                <tr>
+                    <td><code>i</code></td>
+                    <td>忽略大小写</td>
+                    <td><code>/hello/i</code> → 匹配 "Hello"</td>
+                    <td>通用</td>
+                </tr>
+                <tr>
+                    <td><code>g</code></td>
+                    <td>全局匹配（查找所有匹配项）</td>
+                    <td><code>/a/g</code> → 匹配所有 "a"</td>
+                    <td>JavaScript、Python</td>
+                </tr>
+                <tr>
+                    <td><code>m</code></td>
+                    <td>多行模式（^和$匹配行首行尾） </td>
+                    <td><code>/^start/m</code>  → 匹配每行开头</td>
+                    <td>通用 </td>
+                </tr>
+                <tr>
+                    <td><code>s</code></td>
+                    <td>单行模式（'.' 包含换行符） </td>
+                    <td><code>/a.b/s</code>  → 匹配每行开头</td>
+                    <td>Perl、PHP、Python re.DOTALL </td>
+                </tr>
+            </table>
+
+            <h3>8. 其他高级语法</h3>
+            <table>
+                <tr>
+                    <th>语法</th><th>描述</th><th>示例</th><th>支持引擎</th>
+                </tr>
+                <tr>
+                    <td><code>(?R)</code></td>
+                    <td>递归匹配（匹配嵌套结构）</td>
+                    <td><code>\\((?:[^()]|(?R))*\\)</code> → 匹配嵌套括号</td>
+                    <td>PCRE</td>
+                </tr>
+                <tr>
+                    <td><code>\\K</code></td>
+                    <td>重置匹配起点（保留左侧内容）</td>
+                    <td><code>foo\\Kbar</code> → 匹配 "foobar" 中的 "bar"</td>
+                    <td>Perl、PCRE</td>
+                </tr>
+            </table>
+
+            <h3>速查表使用技巧</h3>
+            <ul>
+                <li><strong>优先级</strong>：类似算术运算符，正则表达式有优先级（如 <code>*</code> > 连接 > <code>|</code>）。</li>
+                <li><strong>性能优化</strong>：避免过度使用 <code>.*</code>，尽量用具体字符类（如用 <code>\\d</code> 代替 <code>.</code> 匹配数字）。</li>
+                <li><strong>在线测试</strong>：推荐使用 <a href="https://regex101.com/" target="_blank">Regex101</a> 或 <a href="https://regexr.com/" target="_blank">RegExr</a> 实时调试。</li>
+                <li><strong>学习资源</strong>：推荐阅读《正则指引》、《精通正则表达式》等书籍，多练习提升技能。</li>
+                <li><strong>其他参考</strong>：<a href="https://www.runoob.com/regexp/regexp-syntax.html" target="_blank">菜鸟正则查询</a>。</li>
+            </ul>
+        </body>
+    </html>
+  `;
+
+
+}
