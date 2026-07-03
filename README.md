@@ -74,7 +74,7 @@ Refer to [Usage](./USAGE.md) document for more details.
 
 - Open this example in VS Code Insiders
 - `npm install`
-- `npm run watch`
+- `npm run watch` or `npm run compile`
 - `F5` to start debugging
 - Node dependencies view is shown in Package explorer view contaier in Activity bar.
 - FTP file explorer view should be shown in Explorer

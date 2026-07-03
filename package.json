@@ -16,8 +16,9 @@
 	"categories": [
 		"Other"
 	],
-	"icon": "resources/icon.png",
+	"icon": "media/dep.png",
 	"activationEvents": [
+		"onStartupFinished",
 		"onLanguage:json",
 		"onLanguage:jsonc"
 	],
@@ -39,6 +40,12 @@
 					"name": "Rad6xx DevPlay",
 					"icon": "media/dep.svg",
 					"contextualTitle": "Rad6xx DevPlay"
+				},
+				{
+					"id": "DevAllInOneBookmarks",
+					"name": "Bookmarks",
+					"icon": "media/dep.svg",
+					"contextualTitle": "Bookmarks"
 				}
 			],
 			"explorer": [
@@ -62,10 +69,42 @@
 				"command": "DevAllInOne.showAsciiLookupTable",
 				"title": "DevAllInOne:Show ASCII Lookup Table"
 			},
-            {
-                "command": "DevAllInOne.showMenu",
-                "title": "显示菜单"
-            },
+			{
+				"command": "DevAllInOne.showHttpClient",
+				"title": "DevAllInOne:HTTP Client"
+			},
+			{
+				"command": "DevAllInOne.showEnvVariables",
+				"title": "DevAllInOne:Environment Variables"
+			},
+			{
+				"command": "DevAllInOne.showExecutionCenter",
+				"title": "DevAllInOne:Execution Center"
+			},
+			{
+				"command": "DevAllInOne.runWithLogs",
+				"title": "Run (logs)",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "DevAllInOne.addBookmark",
+				"title": "DevAllInOne:Add Bookmark"
+			},
+			{
+				"command": "DevAllInOne.removeBookmark",
+				"title": "Remove Bookmark",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "DevAllInOne.showMenu",
+				"title": "显示菜单"
+			},
 			{
 				"command": "DevAllInOne.refreshEntry",
 				"title": "Refresh",
@@ -90,6 +129,10 @@
 			{
 				"command": "DevAllInOne.deleteEntry",
 				"title": "Delete"
+			},
+			{
+				"command": "DevAllInOne.renameEntry",
+				"title": "Rename"
 			},
 			{
 				"command": "jsonOutline.refresh",
@@ -132,6 +175,11 @@
 					"group": "navigation"
 				},
 				{
+					"command": "DevAllInOne.showExecutionCenter",
+					"when": "view == DevAllInOne",
+					"group": "navigation"
+				},
+				{
 					"command": "jsonOutline.renameNode",
 					"when": "view == jsonOutline"
 				},
@@ -147,13 +195,34 @@
 			],
 			"view/item/context": [
 				{
-					"command": "DevAllInOne.editEntry",
-					"when": "view == DevAllInOne && viewItem == dependency",
+					"command": "DevAllInOne.runWithLogs",
+					"when": "view == DevAllInOne && viewItem == action",
 					"group": "inline"
 				},
 				{
+					"command": "DevAllInOne.editEntry",
+					"when": "view == DevAllInOne && viewItem == action",
+					"group": "inline"
+				},
+				{
+					"command": "DevAllInOne.addEntry",
+					"when": "view == DevAllInOne && viewItem == group",
+					"group": "1_modification"
+				},
+				{
+					"command": "DevAllInOne.editEntry",
+					"when": "view == DevAllInOne && viewItem == action",
+					"group": "1_modification"
+				},
+				{
+					"command": "DevAllInOne.renameEntry",
+					"when": "view == DevAllInOne && (viewItem == action || viewItem == group)",
+					"group": "1_modification"
+				},
+				{
 					"command": "DevAllInOne.deleteEntry",
-					"when": "view == DevAllInOne && viewItem == dependency"
+					"when": "view == DevAllInOne && (viewItem == action || viewItem == group)",
+					"group": "1_modification"
 				},
 				{
 					"command": "jsonOutline.renameNode",
@@ -168,6 +237,18 @@
 					"command": "fileExplorer.refreshFile",
 					"when": "view == fileExplorer && viewItem == file",
 					"group": "inline"
+				},
+				{
+					"command": "DevAllInOne.removeBookmark",
+					"when": "view == DevAllInOneBookmarks && viewItem == bookmark",
+					"group": "inline"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "DevAllInOne.addBookmark",
+					"group": "navigation",
+					"when": "editorTextFocus"
 				}
 			]
 		},
@@ -175,19 +256,17 @@
 			{
 				"type": "object",
 				"properties": {
-				  "DevAllInOne.jsonFilePath": {
-					"type": "string",
-					"default": "",
-					"description": "Select json file(s) for the setting, muptiple selections are seperated by semicolon."
-				  },
-				  "DevAllInOne.jsonMerge": {
-					"type": "boolean",
-					"description": "Merge setting json file to workspace json, in spite of the existence file /conf/config*.json.",
-					"default": true
+					"DevAllInOne.jsonFilePath": {
+						"type": "string",
+						"default": "",
+						"description": "Select json file(s) for the setting, muptiple selections are seperated by semicolon."
+					},
+					"DevAllInOne.jsonMerge": {
+						"type": "boolean",
+						"description": "Merge setting json file to workspace json, in spite of the existence file /conf/config*.json.",
+						"default": true
+					}
 				}
-				}
-				
-			  
 			}
 		]
 	},
@@ -200,7 +279,7 @@
 	"devDependencies": {
 		"@types/ftp": "^0.3.33",
 		"@types/mkdirp": "^0.5.2",
-		"@types/node": "^20",
+		"@types/node": "^20.19.43",
 		"@types/rimraf": "^2.0.2",
 		"@types/vscode": "^1.73.0",
 		"@typescript-eslint/eslint-plugin": "^7.14.0",
