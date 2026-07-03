@@ -82,8 +82,40 @@
 				"title": "DevAllInOne:Execution Center"
 			},
 			{
+				"command": "DevAllInOne.showDashboard",
+				"title": "DevAllInOne:Quick Access Dashboard",
+				"icon": {
+					"light": "resources/light/dependency.svg",
+					"dark": "resources/dark/dependency.svg"
+				}
+			},
+			{
+				"command": "DevAllInOne.toggleFavorite",
+				"title": "Toggle Favorite",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				}
+			},
+			{
+				"command": "DevAllInOne.removeFavorite",
+				"title": "Remove Favorite"
+			},
+			{
+				"command": "DevAllInOne.runFavoriteByIndex",
+				"title": "DevAllInOne:Run Favorite By Index"
+			},
+			{
 				"command": "DevAllInOne.runWithLogs",
 				"title": "Run (logs)",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "DevAllInOne.runSequence",
+				"title": "Run Sequence",
 				"icon": {
 					"light": "resources/light/refresh.svg",
 					"dark": "resources/dark/refresh.svg"
@@ -170,6 +202,11 @@
 		"menus": {
 			"view/title": [
 				{
+					"command": "DevAllInOne.showDashboard",
+					"when": "view == DevAllInOne",
+					"group": "navigation"
+				},
+				{
 					"command": "DevAllInOne.refreshEntry",
 					"when": "view == DevAllInOne",
 					"group": "navigation"
@@ -196,12 +233,32 @@
 			"view/item/context": [
 				{
 					"command": "DevAllInOne.runWithLogs",
-					"when": "view == DevAllInOne && viewItem == action",
+					"when": "view == DevAllInOne && (viewItem == action || viewItem == action-fav)",
 					"group": "inline"
 				},
 				{
+					"command": "DevAllInOne.runSequence",
+					"when": "view == DevAllInOne && viewItem == group",
+					"group": "inline"
+				},
+				{
+					"command": "DevAllInOne.runSequence",
+					"when": "view == DevAllInOne && viewItem == group",
+					"group": "1_modification"
+				},
+				{
+					"command": "DevAllInOne.toggleFavorite",
+					"when": "view == DevAllInOne && (viewItem == action || viewItem == action-fav)",
+					"group": "9_fav"
+				},
+				{
+					"command": "DevAllInOne.removeFavorite",
+					"when": "view == DevAllInOne && viewItem == action-fav",
+					"group": "9_fav"
+				},
+				{
 					"command": "DevAllInOne.editEntry",
-					"when": "view == DevAllInOne && viewItem == action",
+					"when": "view == DevAllInOne && (viewItem == action || viewItem == action-fav)",
 					"group": "inline"
 				},
 				{
@@ -211,17 +268,17 @@
 				},
 				{
 					"command": "DevAllInOne.editEntry",
-					"when": "view == DevAllInOne && viewItem == action",
+					"when": "view == DevAllInOne && (viewItem == action || viewItem == action-fav)",
 					"group": "1_modification"
 				},
 				{
 					"command": "DevAllInOne.renameEntry",
-					"when": "view == DevAllInOne && (viewItem == action || viewItem == group)",
+					"when": "view == DevAllInOne && (viewItem == action || viewItem == action-fav || viewItem == group)",
 					"group": "1_modification"
 				},
 				{
 					"command": "DevAllInOne.deleteEntry",
-					"when": "view == DevAllInOne && (viewItem == action || viewItem == group)",
+					"when": "view == DevAllInOne && (viewItem == action || viewItem == action-fav || viewItem == group)",
 					"group": "1_modification"
 				},
 				{
@@ -252,6 +309,53 @@
 				}
 			]
 		},
+		"keybindings": [
+			{
+				"command": "DevAllInOne.runFavoriteByIndex",
+				"key": "alt+1",
+				"args": 1
+			},
+			{
+				"command": "DevAllInOne.runFavoriteByIndex",
+				"key": "alt+2",
+				"args": 2
+			},
+			{
+				"command": "DevAllInOne.runFavoriteByIndex",
+				"key": "alt+3",
+				"args": 3
+			},
+			{
+				"command": "DevAllInOne.runFavoriteByIndex",
+				"key": "alt+4",
+				"args": 4
+			},
+			{
+				"command": "DevAllInOne.runFavoriteByIndex",
+				"key": "alt+5",
+				"args": 5
+			},
+			{
+				"command": "DevAllInOne.runFavoriteByIndex",
+				"key": "alt+6",
+				"args": 6
+			},
+			{
+				"command": "DevAllInOne.runFavoriteByIndex",
+				"key": "alt+7",
+				"args": 7
+			},
+			{
+				"command": "DevAllInOne.runFavoriteByIndex",
+				"key": "alt+8",
+				"args": 8
+			},
+			{
+				"command": "DevAllInOne.runFavoriteByIndex",
+				"key": "alt+9",
+				"args": 9
+			}
+		],
 		"configuration": [
 			{
 				"type": "object",

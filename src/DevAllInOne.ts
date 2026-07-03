@@ -14,10 +14,19 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 	private localJsonData:any;  // debug
 	private settingPath: string | undefined;
 	private mergeFlag: boolean | undefined;
+	// Decorator hooks (injected by extension.ts) for favorites and last-run status.
+	private isFavorite: (fullpath: string) => boolean = () => false;
+	private statusOf: (fullpath: string) => string | undefined = () => undefined;
 	constructor(private workspaceRoot: string | undefined, settingPath:string|undefined, mergeFlag:boolean|undefined) {
 		this.settingPath = settingPath;
 		this.mergeFlag = mergeFlag;
 		this.loadConfig();
+	}
+
+	/** Inject favorite / status providers so tree items can be decorated. */
+	setDecorators(isFavorite: (fullpath: string) => boolean, statusOf: (fullpath: string) => string | undefined): void {
+		this.isFavorite = isFavorite;
+		this.statusOf = statusOf;
 	}
 
 	/**
@@ -134,8 +143,11 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 							return new PlayerItem('null', '', vscode.TreeItemCollapsibleState.Collapsed);
 						}
 						const parsedCommand = this.parseCommandString(value);
-						return new PlayerItem(key, '', vscode.TreeItemCollapsibleState.None, element.fullpath?.toString() + '/' + key.toString(), 
+						const leafPath = element.fullpath?.toString() + '/' + key.toString();
+						const leaf = new PlayerItem(key, '', vscode.TreeItemCollapsibleState.None, leafPath, 
 						{command: 'extension.justBeatIt',title: '',arguments: [parsedCommand.command, parsedCommand.type, parsedCommand.argument,parsedCommand.reserved1]});
+						this.decorateLeaf(leaf, leafPath, parsedCommand.type);
+						return leaf;
 					}
 				
 				}
@@ -195,6 +207,59 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 		}
 	}
 
+	/** Apply favorite marker and last-run status icon to a leaf action item. */
+	private decorateLeaf(item: PlayerItem, fullpath: string, type: string | undefined): void {
+		const fav = this.isFavorite(fullpath);
+		const status = this.statusOf(fullpath);
+		const descParts: string[] = [];
+		if (fav) {
+			descParts.push('\u2605');
+		}
+		if (status === 'running') {
+			item.iconPath = new vscode.ThemeIcon('sync~spin');
+			descParts.push('running');
+		} else if (status === 'success') {
+			item.iconPath = new vscode.ThemeIcon('pass', new vscode.ThemeColor('testing.iconPassed'));
+		} else if (status === 'failed') {
+			item.iconPath = new vscode.ThemeIcon('error', new vscode.ThemeColor('testing.iconFailed'));
+		} else if (status === 'stopped') {
+			item.iconPath = new vscode.ThemeIcon('circle-slash');
+		}
+		if (descParts.length) {
+			item.description = descParts.join('  ');
+		}
+		if (fav) {
+			item.contextValue = 'action-fav';
+		}
+	}
+
+	/** Favorite actions in stable order (for shortcuts / dashboard). */
+	getFavoriteActions(): FlatAction[] {
+		return this.getFlatActions().filter(a => this.isFavorite(a.fullpath));
+	}
+
+	/** Look up a single action by its full path. */
+	getActionByPath(fullpath: string): FlatAction | undefined {
+		return this.getFlatActions().find(a => a.fullpath === fullpath);
+	}
+
+	/** Direct child leaf actions of a group (in key order) — used for sequence/workflow runs. */
+	getGroupActions(fullpath: string): { label: string; type: string | undefined; command: string; argument: string | undefined }[] {
+		const sub = this.getValueByPath(this.AlljsonData, fullpath);
+		if (!sub || typeof sub !== 'object') {
+			return [];
+		}
+		const out: { label: string; type: string | undefined; command: string; argument: string | undefined }[] = [];
+		for (const key of Object.keys(sub)) {
+			const v = sub[key];
+			if (typeof v === 'string') {
+				const p = this.parseCommandString(v);
+				out.push({ label: key, type: p.type, command: p.command, argument: p.argument });
+			}
+		}
+		return out;
+	}
+
 	/**
 	 * Flatten all leaf (runnable) actions from the merged config into a list,
 	 * used by the dynamic command palette for fuzzy search.
@@ -213,6 +278,7 @@ export class DevPlayer implements vscode.TreeDataProvider<PlayerItem> {
 					actions.push({
 						label: key,
 						pathLabel: nextTrail.join(' / '),
+						fullpath: nextTrail.join('/'),
 						type: parsed.type,
 						command: parsed.command,
 						argument: parsed.argument,
@@ -395,7 +461,7 @@ export class PlayerItem extends vscode.TreeItem {
 		this.contextValue = collapsibleState === vscode.TreeItemCollapsibleState.None ? 'action' : 'group';
 	}
 
-	iconPath = {
+	iconPath: vscode.TreeItem['iconPath'] = {
 		light: path.join(__filename, '..', '..', 'resources', 'light', 'dependency.svg'),
 		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'dependency.svg')
 	};
@@ -415,6 +481,7 @@ interface ParsedCommand {
 export interface FlatAction {
     label: string;
     pathLabel: string;
+    fullpath: string;
     type: string | undefined;
     command: string;
     argument: string | undefined;

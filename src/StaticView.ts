@@ -8,7 +8,7 @@ export function getWebviewContent_ascii_lut(){
     <script>
     document.addEventListener('keydown', (event) => {
         if (event.ctrlKey && event.key === 'f') {
-            // 向扩展发送消息，触发 VSCode 查找框
+            // Notify the extension to trigger the VS Code find box
             vscode.postMessage({
                 command: 'triggerFind'
             });
@@ -54,21 +54,21 @@ export function getWebviewContent_ascii_lut(){
 </head>
 <table>
 	<caption>
-		标准 ASCII 码对照表（十进制0-31背景为控制字符，其余为为可显示字符）</caption>
+		Standard ASCII table (decimal 0-31 shaded are control characters, the rest are printable characters)</caption>
     <thead>
 		<tr>
 			<th>
-				二进制</th>
+				Binary</th>
 			<th>
-				八进制</th>
+				Octal</th>
 			<th>
-				十进制</th>
+				Decimal</th>
 			<th>
-				十六进制</th>
+				Hex</th>
 			<th>
-				字符/缩写</th>
+				Char/Abbr</th>
 			<th>
-				解释</th>
+				Description</th>
 		</tr>
     </thead>
 	<tbody>
@@ -84,7 +84,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				NUL (NULL)</td>
 			<td>
-				空字符</td>
+				Null character</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -98,7 +98,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				SOH (Start Of Headling)</td>
 			<td>
-				标题开始</td>
+				Start of heading</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -112,7 +112,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				STX (Start Of Text)</td>
 			<td>
-				正文开始</td>
+				Start of text</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -126,7 +126,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				ETX (End Of Text)</td>
 			<td>
-				正文结束</td>
+				End of text</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -140,7 +140,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				EOT (End Of Transmission)</td>
 			<td>
-				传输结束</td>
+				End of transmission</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -154,7 +154,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				ENQ (Enquiry)</td>
 			<td>
-				请求</td>
+				Enquiry</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -168,7 +168,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				ACK (Acknowledge)</td>
 			<td>
-				回应/响应/收到通知</td>
+				Acknowledge</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -182,7 +182,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				BEL (Bell)</td>
 			<td>
-				响铃</td>
+				Bell</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -196,7 +196,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				BS (Backspace)</td>
 			<td>
-				退格</td>
+				Backspace</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -210,7 +210,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				HT (Horizontal Tab)</td>
 			<td>
-				水平制表符</td>
+				Horizontal tab</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -224,7 +224,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				LF/NL(Line Feed/New Line)</td>
 			<td>
-				换行键</td>
+				Line feed / new line</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -238,7 +238,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				VT (Vertical Tab)</td>
 			<td>
-				垂直制表符</td>
+				Vertical tab</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -252,7 +252,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				FF/NP (Form Feed/New Page)</td>
 			<td>
-				换页键</td>
+				Form feed / new page</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -266,7 +266,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				CR (Carriage Return)</td>
 			<td>
-				回车键</td>
+				Carriage return</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -280,7 +280,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				SO (Shift Out)</td>
 			<td>
-				不用切换</td>
+				Shift out</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -294,7 +294,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				SI (Shift In)</td>
 			<td>
-				启用切换</td>
+				Shift in</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -308,7 +308,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				DLE (Data Link Escape)</td>
 			<td>
-				数据链路转义</td>
+				Data link escape</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -323,7 +323,7 @@ export function getWebviewContent_ascii_lut(){
 				DC1/XON<br>
 				(Device Control 1/Transmission On)</td>
 			<td>
-				设备控制1/传输开始</td>
+				Device control 1 / XON</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -337,7 +337,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				DC2 (Device Control 2)</td>
 			<td>
-				设备控制2</td>
+				Device control 2</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -352,7 +352,7 @@ export function getWebviewContent_ascii_lut(){
 				DC3/XOFF<br>
 				(Device Control 3/Transmission Off)</td>
 			<td>
-				设备控制3/传输中断</td>
+				Device control 3 / XOFF</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -366,7 +366,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				DC4 (Device Control 4)</td>
 			<td>
-				设备控制4</td>
+				Device control 4</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -380,7 +380,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				NAK (Negative Acknowledge)</td>
 			<td>
-				无响应/非正常响应/拒绝接收</td>
+				Negative acknowledge</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -394,7 +394,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				SYN (Synchronous Idle)</td>
 			<td>
-				同步空闲</td>
+				Synchronous idle</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -408,7 +408,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				ETB (End of Transmission Block)</td>
 			<td>
-				传输块结束/块传输终止</td>
+				End of transmission block</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -422,7 +422,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				CAN (Cancel)</td>
 			<td>
-				取消</td>
+				Cancel</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -436,7 +436,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				EM (End of Medium)</td>
 			<td>
-				已到介质末端/介质存储已满/介质中断</td>
+				End of medium</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -450,7 +450,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				SUB (Substitute)</td>
 			<td>
-				替补/替换</td>
+				Substitute</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -464,7 +464,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				ESC (Escape)</td>
 			<td>
-				逃离/取消</td>
+				Escape</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -478,7 +478,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				FS (File Separator)</td>
 			<td>
-				文件分割符</td>
+				File separator</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -492,7 +492,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				GS (Group Separator)</td>
 			<td>
-				组分隔符/分组符</td>
+				Group separator</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -506,7 +506,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				RS (Record Separator)</td>
 			<td>
-				记录分离符</td>
+				Record separator</td>
 		</tr>
 		<tr class="bg-ctrl">
 			<td>
@@ -520,7 +520,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				US (Unit Separator)</td>
 			<td>
-				单元分隔符</td>
+				Unit separator</td>
 		</tr>
 		<tr>
 			<td>
@@ -534,7 +534,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				(Space)</td>
 			<td>
-				空格</td>
+				Space</td>
 		</tr>
 		<tr>
 			<td>
@@ -1864,7 +1864,7 @@ export function getWebviewContent_ascii_lut(){
 			<td>
 				DEL (Delete)</td>
 			<td>
-				删除</td>
+				Delete</td>
 		</tr>
 	</tbody>
 </table>
@@ -1875,11 +1875,11 @@ export function getWebviewContent_ascii_lut(){
 export 	function getWebviewContent_rex_lut() {
     return `
         <!DOCTYPE html>
-        <html lang="zh">
+        <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>正则表达式语法速查表</title>
+            <title>Regex Syntax Cheat Sheet</title>
             <style>
                 body {
                     font-family: Arial, sans-serif;
@@ -1916,281 +1916,281 @@ export 	function getWebviewContent_rex_lut() {
             </style>
         </head>
         <body>
-            <h2><strong>正则表达式语法速查表</strong></h2>
+            <h2><strong>Regex Syntax Cheat Sheet</strong></h2>
 
-            <h3>1. 基础匹配</h3>
+            <h3>1. Basic matching</h3>
             <table>
                 <tr>
-                    <th>语法</th><th>描述</th><th>示例</th><th>注意事项</th>
+                    <th>Syntax</th><th>Description</th><th>Example</th><th>Notes</th>
                 </tr>
                 <tr>
                     <td><code>a</code></td>
-                    <td>匹配普通字符</td>
-                    <td><code>cat</code> → 匹配 "cat"</td>
-                    <td>区分大小写（默认）</td>
+                    <td>Match a literal character</td>
+                    <td><code>cat</code> → matches "cat"</td>
+                    <td>Case-sensitive (default)</td>
                 </tr>
                 <tr>
                     <td><code>.</code></td>
-                    <td>匹配任意字符（除换行符）</td>
+                    <td>Match any character (except newline)</td>
                     <td><code>a.c</code> → "abc", "a c"</td>
-                    <td>使用 <code>s</code> 修饰符时包含换行符</td>
+                    <td>Includes newline with the <code>s</code> flag</td>
                 </tr>
                 <tr>
                     <td><code>\\</code></td>
-                    <td>转义特殊字符</td>
-                    <td><code>\\.</code> → 匹配 "."</td>
-                    <td>转义 <code>\\</code> 需用 <code>\\</code>, 如匹配<code>.</code>时需要使用<code>\\.</code></td>
+                    <td>Escape a special character</td>
+                    <td><code>\\.</code> → matches "."</td>
+                    <td>To match <code>\\</code> use <code>\\\\</code>; to match <code>.</code> use <code>\\.</code></td>
                 </tr>
 
             </table>
 
-            <h3>2. 量词（重复匹配）</h3>
+            <h3>2. Quantifiers (repetition)</h3>
             <table>
                 <tr>
-                    <th>语法</th><th>描述</th><th>示例</th><th>等效写法</th>
+                    <th>Syntax</th><th>Description</th><th>Example</th><th>Equivalent</th>
                 </tr>
                 <tr>
                     <td><code>*</code></td>
-                    <td>匹配前一个元素 0 次或多次</td>
+                    <td>Match the previous element 0 or more times</td>
                     <td><code>a*</code> → "", "a", "aaa"</td>
                     <td><code>{0,}</code></td>
                 </tr>
                 <tr>
                     <td><code>+</code></td>
-                    <td>匹配前一个元素 1 次或多次</td>
+                    <td>Match the previous element 1 or more times</td>
                     <td><code>a+</code> → "a", "aaa"</td>
                     <td><code>{1,}</code></td>
                 </tr>
                 <tr>
                     <td><code>?</code></td>
-                    <td>匹配前一个元素 0 次或 1 次</td>
+                    <td>Match the previous element 0 or 1 time</td>
                     <td><code>colou?r</code> → "color", "colour"</td>
                     <td><code>{0,1}</code></td>
                 </tr>
                 <tr>
                     <td><code>{n}</code></td>
-                    <td>匹配前一个元素恰好 n 次</td>
+                    <td>Match the previous element exactly n times</td>
                     <td><code>\\d{4}</code> → "2023"</td>
-                    <td>精确匹配</td>
+                    <td>Exact match</td>
                 </tr>
                 <tr>
                     <td><code>{n,}</code></td>
-                    <td>匹配前一个元素至少 n 次</td>
+                    <td>Match the previous element at least n times</td>
                     <td><code>\\d{3,}</code> → "123", "4567"</td>
                     <td>-</td>
                 </tr>
                 <tr>
                     <td><code>{n,m}</code></td>
-                    <td>匹配前一个元素 n 到 m 次</td>
+                    <td>Match the previous element n to m times</td>
                     <td><code>a{2,4}</code> → "aa", "aaaa"</td>
-                    <td>贪婪匹配</td>
+                    <td>Greedy match</td>
                 </tr>
                 <tr>
                     <td><code>*?</code></td>
-                    <td><strong>懒惰模式</strong>（非贪婪匹配）</td>
-                    <td><code>&lt;div&gt;.*?&lt;/div&gt;</code> → 最短匹配</td>
-                    <td>与 <code>.*</code> 对比</td>
+                    <td><strong>Lazy mode</strong> (non-greedy match)</td>
+                    <td><code>&lt;div&gt;.*?&lt;/div&gt;</code> → shortest match</td>
+                    <td>Compare with <code>.*</code></td>
                 </tr>
             </table>
 
-            <h3>3. 字符类</h3>
+            <h3>3. Character classes</h3>
             <table>
                 <tr>
-                    <th>语法</th><th>描述</th><th>示例</th><th>等效写法</th>
+                    <th>Syntax</th><th>Description</th><th>Example</th><th>Equivalent</th>
                 </tr>
                 <tr>
                     <td><code>[abc]</code></td>
-                    <td>匹配括号内任意字符</td>
-                    <td><code>[aeiou]</code> → 匹配元音字母</td>
+                    <td>Match any character inside the brackets</td>
+                    <td><code>[aeiou]</code> → matches vowels</td>
                     <td>-</td>
                 </tr>
                 <tr>
                     <td><code>[^abc]</code></td>
-                    <td>匹配不在括号内的任意字符</td>
-                    <td><code>[^0-9]</code> → 非数字字符</td>
+                    <td>Match any character not inside the brackets</td>
+                    <td><code>[^0-9]</code> → non-digit characters</td>
                     <td>-</td>
                 </tr>
                 <tr>
                     <td><code>\\d</code></td>
-                    <td>匹配数字（0-9）</td>
+                    <td>Match a digit (0-9)</td>
                     <td><code>\\d+</code> → "123"</td>
                     <td><code>[0-9]</code></td>
                 </tr>
                 <tr>
                     <td><code>\\D</code></td>
-                    <td>匹配非数字字符</td>
+                    <td>Match a non-digit character</td>
                     <td><code>\\D+</code> → "abc"</td>
                     <td><code>[^0-9]</code></td>
                 </tr>
                 <tr>
                     <td><code>\\w</code></td>
-                    <td>匹配单词字符（字母、数字、下划线）</td>
+                    <td>Match a word character (letter, digit, underscore)</td>
                     <td><code>\\w+</code> → "user123"</td>
                     <td><code>[a-zA-Z0-9_]</code></td>
                 </tr>
                 <tr>
                     <td><code>\\W</code></td>
-                    <td>匹配非单词字符</td>
+                    <td>Match a non-word character</td>
                     <td><code>\\W</code> → "@"</td>
                     <td><code>[^\\w]</code></td>
                 </tr>
                 <tr>
                     <td><code>\\s</code></td>
-                    <td>匹配空白字符（空格、制表符等）</td>
+                    <td>Match a whitespace character (space, tab, etc.)</td>
                     <td><code>\\s+</code> → "   "</td>
                     <td><code>[ \\t\\n\\r\\f]</code></td>
                 </tr>
                 <tr>
                     <td><code>\\S</code></td>
-                    <td>匹配非空白字符</td>
+                    <td>Match a non-whitespace character</td>
                     <td><code>\\S+</code> → "Hello"</td>
                     <td><code>[^\\s]</code></td>
                 </tr>
             </table>
 
-            <h3>4. 定位符（边界匹配）</h3>
+            <h3>4. Anchors (boundary matching)</h3>
             <table>
                 <tr>
-                    <th>语法</th><th>描述</th><th>示例</th><th>用途场景</th>
+                    <th>Syntax</th><th>Description</th><th>Example</th><th>Use case</th>
                 </tr>
                 <tr>
                     <td><code>^</code></td>
-                    <td>匹配行首</td>
-                    <td><code>^Start</code> → 行首的 "Start"</td>
-                    <td>日志分析、数据校验</td>
+                    <td>Match the start of a line</td>
+                    <td><code>^Start</code> → "Start" at line start</td>
+                    <td>Log analysis, data validation</td>
                 </tr>
                 <tr>
                     <td><code>$</code></td>
-                    <td>匹配行尾</td>
-                    <td><code>end$</code> → 行尾的 "end"</td>
-                    <td>同上</td>
+                    <td>Match the end of a line</td>
+                    <td><code>end$</code> → "end" at line end</td>
+                    <td>Same as above</td>
                 </tr>
                 <tr>
                     <td><code>\\b</code></td>
-                    <td>单词边界（字母与非字母间）</td>
-                    <td><code>\\bcat\\b</code> → 匹配 "cat" 不匹配 "category"</td>
-                    <td>精确单词匹配</td>
+                    <td>Word boundary (between word and non-word)</td>
+                    <td><code>\\bcat\\b</code> → matches "cat", not "category"</td>
+                    <td>Exact word matching</td>
                 </tr>
                 <tr>
                     <td><code>\\B</code></td>
-                    <td>非单词边界</td>
-                    <td><code>\\Bcat\\B</code> → 匹配 "category" 中的 "cat"</td>
-                    <td>子串匹配</td>
+                    <td>Non-word boundary</td>
+                    <td><code>\\Bcat\\B</code> → matches "cat" in "category"</td>
+                    <td>Substring matching</td>
                 </tr>
             </table>
-            <h3>5. 分组与引用</h3>
+            <h3>5. Groups and references</h3>
             <table>
                 <tr>
-                    <th>语法</th><th>描述</th><th>示例</th><th>用途</th>
+                    <th>Syntax</th><th>Description</th><th>Example</th><th>Use</th>
                 </tr>
                 <tr>
                     <td><code>(exp)</code></td>
-                    <td>捕获分组并存储匹配内容</td>
-                    <td><code>(\\d{4})-(\\d{2})</code> → 提取年月</td>
-                    <td>数据提取、替换</td>
+                    <td>Capturing group, stores the match</td>
+                    <td><code>(\\d{4})-(\\d{2})</code> → extract year/month</td>
+                    <td>Data extraction, replacement</td>
                 </tr>
                 <tr>
                     <td><code>(?:exp)</code></td>
-                    <td>非捕获分组（不存储匹配内容）</td>
-                    <td><code>(?:\\d{3}-){2}\\d{4}</code> → 匹配电话号但不分组</td>
-                    <td>优化性能</td>
+                    <td>Non-capturing group (does not store the match)</td>
+                    <td><code>(?:\\d{3}-){2}\\d{4}</code> → match a phone number without capturing</td>
+                    <td>Performance</td>
                 </tr>
                 <tr>
                     <td><code>\\1, \\2</code></td>
-                    <td>引用捕获分组的内容</td>
-                    <td><code>(\\w+) \\1</code> → 匹配重复单词（如 "hello hello"）</td>
-                    <td>去重、模式验证</td>
+                    <td>Backreference to a captured group</td>
+                    <td><code>(\\w+) \\1</code> → match a repeated word (e.g. "hello hello")</td>
+                    <td>Deduplication, validation</td>
                 </tr>
             </table>
 
-            <h3>6. 断言（零宽断言）</h3>
+            <h3>6. Assertions (zero-width)</h3>
             <table>
                 <tr>
-                    <th>语法</th><th>描述</th><th>示例</th><th>用途</th>
+                    <th>Syntax</th><th>Description</th><th>Example</th><th>Use</th>
                 </tr>
                 <tr>
                     <td><code>(?=exp)</code></td>
-                    <td>正向先行断言:右侧需匹配 exp</td>
-                    <td><code>Windows(?=10|11)</code> → 匹配 "Windows" 后跟 10/11</td>
-                    <td>条件筛选</td>
+                    <td>Positive lookahead: must be followed by exp</td>
+                    <td><code>Windows(?=10|11)</code> → "Windows" followed by 10/11</td>
+                    <td>Conditional filtering</td>
                 </tr>
                 <tr>
                     <td><code>(?!exp)</code></td>
-                    <td>负向先行断言:右侧不能匹配 exp</td>
-                    <td><code>\\d{3}(?!\\d)</code> → 匹配3位数字且后不接数字</td>
-                    <td>数据验证</td>
+                    <td>Negative lookahead: must not be followed by exp</td>
+                    <td><code>\\d{3}(?!\\d)</code> → 3 digits not followed by a digit</td>
+                    <td>Data validation</td>
                 </tr>
                 <tr>
                     <td><code>(?<=exp)</code></td>
-                    <td>正向后行断言:左侧需匹配 exp</td>
-                    <td><code>(?<=\\$)\\d+</code> → 匹配 "$100" 中的 "100</td>
-                    <td>提取特定值</td>
+                    <td>Positive lookbehind: must be preceded by exp</td>
+                    <td><code>(?<=\\$)\\d+</code> → "100" in "$100"</td>
+                    <td>Extract specific values</td>
                 </tr>
                 <tr>
                     <td><code>(?<!exp)</code></td>
-                    <td>负向后行断言:左侧不能匹配 exp</td>
-                    <td><code>(?<!192\.168)\\d+</code> →  → 排除内网IP</td>
-                    <td>安全过滤</td>
+                    <td>Negative lookbehind: must not be preceded by exp</td>
+                    <td><code>(?<!192\.168)\\d+</code> → exclude intranet IPs</td>
+                    <td>Security filtering</td>
                 </tr>
             </table>
 
-            <h3>7. 模式修饰符</h3>
+            <h3>7. Pattern flags</h3>
             <table>
                 <tr>
-                    <th>修饰符</th><th>描述</th><th>示例</th><th>支持语言</th>
+                    <th>Flag</th><th>Description</th><th>Example</th><th>Languages</th>
                 </tr>
                 <tr>
                     <td><code>i</code></td>
-                    <td>忽略大小写</td>
-                    <td><code>/hello/i</code> → 匹配 "Hello"</td>
-                    <td>通用</td>
+                    <td>Ignore case</td>
+                    <td><code>/hello/i</code> → matches "Hello"</td>
+                    <td>Common</td>
                 </tr>
                 <tr>
                     <td><code>g</code></td>
-                    <td>全局匹配（查找所有匹配项）</td>
-                    <td><code>/a/g</code> → 匹配所有 "a"</td>
-                    <td>JavaScript、Python</td>
+                    <td>Global match (find all matches)</td>
+                    <td><code>/a/g</code> → matches every "a"</td>
+                    <td>JavaScript, Python</td>
                 </tr>
                 <tr>
                     <td><code>m</code></td>
-                    <td>多行模式（^和$匹配行首行尾） </td>
-                    <td><code>/^start/m</code>  → 匹配每行开头</td>
-                    <td>通用 </td>
+                    <td>Multiline mode (^ and $ match line start/end) </td>
+                    <td><code>/^start/m</code>  → matches the start of each line</td>
+                    <td>Common </td>
                 </tr>
                 <tr>
                     <td><code>s</code></td>
-                    <td>单行模式（'.' 包含换行符） </td>
-                    <td><code>/a.b/s</code>  → 匹配每行开头</td>
-                    <td>Perl、PHP、Python re.DOTALL </td>
+                    <td>Single-line mode ('.' includes newline) </td>
+                    <td><code>/a.b/s</code>  → '.' also matches newline</td>
+                    <td>Perl, PHP, Python re.DOTALL </td>
                 </tr>
             </table>
 
-            <h3>8. 其他高级语法</h3>
+            <h3>8. Other advanced syntax</h3>
             <table>
                 <tr>
-                    <th>语法</th><th>描述</th><th>示例</th><th>支持引擎</th>
+                    <th>Syntax</th><th>Description</th><th>Example</th><th>Engines</th>
                 </tr>
                 <tr>
                     <td><code>(?R)</code></td>
-                    <td>递归匹配（匹配嵌套结构）</td>
-                    <td><code>\\((?:[^()]|(?R))*\\)</code> → 匹配嵌套括号</td>
+                    <td>Recursive match (match nested structures)</td>
+                    <td><code>\\((?:[^()]|(?R))*\\)</code> → match nested parentheses</td>
                     <td>PCRE</td>
                 </tr>
                 <tr>
                     <td><code>\\K</code></td>
-                    <td>重置匹配起点（保留左侧内容）</td>
-                    <td><code>foo\\Kbar</code> → 匹配 "foobar" 中的 "bar"</td>
-                    <td>Perl、PCRE</td>
+                    <td>Reset the match start (keep the left side out)</td>
+                    <td><code>foo\\Kbar</code> → match "bar" in "foobar"</td>
+                    <td>Perl, PCRE</td>
                 </tr>
             </table>
 
-            <h3>速查表使用技巧</h3>
+            <h3>Cheat sheet tips</h3>
             <ul>
-                <li><strong>优先级</strong>：类似算术运算符，正则表达式有优先级（如 <code>*</code> > 连接 > <code>|</code>）。</li>
-                <li><strong>性能优化</strong>：避免过度使用 <code>.*</code>，尽量用具体字符类（如用 <code>\\d</code> 代替 <code>.</code> 匹配数字）。</li>
-                <li><strong>在线测试</strong>：推荐使用 <a href="https://regex101.com/" target="_blank">Regex101</a> 或 <a href="https://regexr.com/" target="_blank">RegExr</a> 实时调试。</li>
-                <li><strong>学习资源</strong>：推荐阅读《正则指引》、《精通正则表达式》等书籍，多练习提升技能。</li>
-                <li><strong>其他参考</strong>：<a href="https://www.runoob.com/regexp/regexp-syntax.html" target="_blank">菜鸟正则查询</a>。</li>
+                <li><strong>Precedence</strong>: like arithmetic operators, regex has precedence (e.g. <code>*</code> > concatenation > <code>|</code>).</li>
+                <li><strong>Performance</strong>: avoid overusing <code>.*</code>; prefer specific character classes (e.g. use <code>\\d</code> instead of <code>.</code> for digits).</li>
+                <li><strong>Online testing</strong>: try <a href="https://regex101.com/" target="_blank">Regex101</a> or <a href="https://regexr.com/" target="_blank">RegExr</a> for live debugging.</li>
+                <li><strong>Learning</strong>: practice regularly to build up your skills.</li>
+                <li><strong>Reference</strong>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions" target="_blank">MDN Regular Expressions</a>.</li>
             </ul>
         </body>
     </html>

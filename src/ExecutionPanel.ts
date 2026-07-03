@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { spawn, ChildProcess } from 'child_process';
 
 type RunStatus = 'running' | 'success' | 'failed' | 'stopped';
+export type { RunStatus };
 
 interface RunRecord {
     id: string;
@@ -13,6 +14,9 @@ interface RunRecord {
     endTime?: number;
     exitCode?: number | null;
     logs: string[];
+    sourceId?: string;
+    onStatus?: (status: RunStatus) => void;
+    resolve?: (ok: boolean) => void;
 }
 
 /**
@@ -42,7 +46,7 @@ export class ExecutionCenter {
         }
         this.panel = vscode.window.createWebviewPanel(
             'devAllInOneExecution',
-            'DevAllInOne: 执行中心',
+            'DevAllInOne: Execution Center',
             vscode.ViewColumn.Active,
             { enableScripts: true, retainContextWhenHidden: true }
         );
@@ -63,7 +67,7 @@ export class ExecutionCenter {
     }
 
     /** Start a new run; opens the panel if not visible. */
-    run(label: string, commandLine: string, cwd: string | undefined): void {
+    run(label: string, commandLine: string, cwd: string | undefined, opts?: { sourceId?: string; onStatus?: (status: RunStatus) => void }): void {
         this.show();
         const record: RunRecord = {
             id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
@@ -72,11 +76,56 @@ export class ExecutionCenter {
             cwd,
             status: 'running',
             startTime: Date.now(),
-            logs: []
+            logs: [],
+            sourceId: opts?.sourceId,
+            onStatus: opts?.onStatus
         };
         this.runs.unshift(record);
+        record.onStatus?.('running');
         this.postAddRun(record);
         this.spawnFor(record);
+    }
+
+    /**
+     * Run a list of steps in order (a simple workflow/pipeline). Each step waits
+     * for the previous one; by default it stops on the first failure.
+     */
+    async runSequence(
+        name: string,
+        steps: { label: string; commandLine: string }[],
+        cwd: string | undefined,
+        opts?: { continueOnError?: boolean }
+    ): Promise<void> {
+        this.show();
+        for (let i = 0; i < steps.length; i++) {
+            const step = steps[i];
+            const label = `${name} [${i + 1}/${steps.length}] ${step.label}`;
+            const ok = await this.startAwaitable(label, step.commandLine, cwd);
+            if (!ok && !opts?.continueOnError) {
+                vscode.window.setStatusBarMessage(`$(error) DevAllInOne: sequence "${name}" stopped at step ${i + 1}`, 4000);
+                return;
+            }
+        }
+        vscode.window.setStatusBarMessage(`$(pass) DevAllInOne: sequence "${name}" finished`, 3000);
+    }
+
+    /** Start a run and resolve to true on success, false on failure/stop. */
+    private startAwaitable(label: string, commandLine: string, cwd: string | undefined): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
+            const record: RunRecord = {
+                id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                label,
+                commandLine,
+                cwd,
+                status: 'running',
+                startTime: Date.now(),
+                logs: [],
+                resolve
+            };
+            this.runs.unshift(record);
+            this.postAddRun(record);
+            this.spawnFor(record);
+        });
     }
 
     private spawnFor(record: RunRecord): void {
@@ -110,9 +159,12 @@ export class ExecutionCenter {
         if (child && record) {
             record.status = 'stopped';
             record.endTime = Date.now();
+            record.onStatus?.('stopped');
             this.appendLog(record, `\n[stopped by user]\n`);
             try { child.kill(); } catch { /* ignore */ }
             this.processes.delete(id);
+            record.resolve?.(false);
+            record.resolve = undefined;
             this.postUpdate(record);
         }
     }
@@ -120,7 +172,7 @@ export class ExecutionCenter {
     private rerun(id: string): void {
         const old = this.runs.find(r => r.id === id);
         if (old) {
-            this.run(old.label, old.commandLine, old.cwd);
+            this.run(old.label, old.commandLine, old.cwd, { sourceId: old.sourceId, onStatus: old.onStatus });
         }
     }
 
@@ -133,6 +185,9 @@ export class ExecutionCenter {
         record.status = status;
         record.exitCode = code;
         record.endTime = Date.now();
+        record.onStatus?.(status);
+        record.resolve?.(status === 'success');
+        record.resolve = undefined;
         this.postUpdate(record);
     }
 
@@ -202,16 +257,16 @@ export class ExecutionCenter {
 </head>
 <body>
 <div class="toolbar">
-    <h3>执行中心</h3>
-    <button id="clearBtn">清除已完成</button>
+    <h3>Execution Center</h3>
+    <button id="clearBtn">Clear finished</button>
 </div>
 <div class="main">
-    <div class="list" id="list"><div class="empty">暂无执行记录</div></div>
+    <div class="list" id="list"><div class="empty">No runs yet</div></div>
     <div class="detail">
         <div class="detail-bar">
             <span class="cmd" id="detailCmd"></span>
-            <button id="stopBtn" style="display:none;">停止</button>
-            <button id="rerunBtn" style="display:none;">重跑</button>
+            <button id="stopBtn" style="display:none;">Stop</button>
+            <button id="rerunBtn" style="display:none;">Rerun</button>
         </div>
         <pre id="log"></pre>
     </div>
@@ -232,13 +287,13 @@ function fmtDuration(r) {
     return (ms / 1000).toFixed(1) + 's';
 }
 function statusText(r) {
-    if (r.status === 'running') return '运行中 · ' + fmtDuration(r);
-    if (r.status === 'success') return '成功 · ' + fmtDuration(r) + ' · exit ' + (r.exitCode ?? 0);
-    if (r.status === 'failed') return '失败 · ' + fmtDuration(r) + ' · exit ' + (r.exitCode ?? '?');
-    return '已停止 · ' + fmtDuration(r);
+    if (r.status === 'running') return 'running · ' + fmtDuration(r);
+    if (r.status === 'success') return 'success · ' + fmtDuration(r) + ' · exit ' + (r.exitCode ?? 0);
+    if (r.status === 'failed') return 'failed · ' + fmtDuration(r) + ' · exit ' + (r.exitCode ?? '?');
+    return 'stopped · ' + fmtDuration(r);
 }
 function renderList() {
-    if (runs.size === 0) { listEl.innerHTML = '<div class="empty">暂无执行记录</div>'; return; }
+    if (runs.size === 0) { listEl.innerHTML = '<div class="empty">No runs yet</div>'; return; }
     const arr = [...runs.values()].sort((a, b) => b.startTime - a.startTime);
     listEl.innerHTML = '';
     for (const r of arr) {

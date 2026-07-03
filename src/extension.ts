@@ -11,6 +11,7 @@ import { HttpClientPanel } from './HttpClientPanel';
 import { getWebviewContent_env } from './EnvView';
 import { ConfigEditorPanel } from './ConfigEditorPanel';
 import { ExecutionCenter } from './ExecutionPanel';
+import { DashboardPanel } from './DashboardPanel';
 import { pathExists } from './utilities';
 import { exec } from 'child_process';
 import { spawn,ChildProcessWithoutNullStreams } from 'child_process';
@@ -48,15 +49,15 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage(`JSON file selected: ${selectedPath}`);
 		}
 		});
-	    // 创建状态栏项
+	    // Create the status bar item
 		const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-		statusBarItem.text = "$(book)"; // 使用内置图标
-		statusBarItem.tooltip = "DevAllInOne"; // 鼠标悬停时的提示
-		statusBarItem.command = 'DevAllInOne.showMenu'; // 绑定命令
+		statusBarItem.text = "$(book)"; // built-in icon
+		statusBarItem.tooltip = "DevAllInOne"; // hover tooltip
+		statusBarItem.command = 'DevAllInOne.showMenu'; // bound command
 	
 		statusBarItem.show();
 	
-		// 注册命令
+		// Register command
 		const showMenuCommand = vscode.commands.registerCommand('DevAllInOne.showMenu',  () => {
 			showQuickPickMenu(context, () => devPlayerRef);
 		});
@@ -64,7 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_rex_lut = vscode.commands.registerCommand('DevAllInOne.showRegexpLookupTable', () => {
 		const panel = vscode.window.createWebviewPanel(
 			'regexpLookupTable',
-			'正则表达式查找表',
+			'Regex Lookup Table',
 			vscode.ViewColumn.One,
             {
                 enableScripts: true,
@@ -74,10 +75,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		panel.webview.html = getWebviewContent_rex_lut();
 
-		// 监听 Webview 的快捷键操作，触发 VSCode 查找框
+		// Listen for the webview's find shortcut and trigger the VS Code find box
 		panel.webview.onDidReceiveMessage((message) => {
 			if (message.command === 'triggerFind') {
-				vscode.commands.executeCommand('actions.find');  // 触发 VSCode 的查找框
+				vscode.commands.executeCommand('actions.find');  // open the VS Code find box
 			}
 		});
 	});
@@ -85,7 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_ascii = vscode.commands.registerCommand('DevAllInOne.showAsciiLookupTable', () => {
 		const panel = vscode.window.createWebviewPanel(
 			'AsciiLookupTable',
-			'ASCII码表',
+			'ASCII Table',
 			vscode.ViewColumn.One,
             {
                 enableScripts: true,
@@ -170,7 +171,89 @@ export function activate(context: vscode.ExtensionContext) {
 			// Samples of `window.registerTreeDataProvider`
 			radPlayerInstance = new DevPlayer(rootPath, selectedPath, mergeSettingFlag);
 			devPlayerRef = radPlayerInstance;
+
+			// --- Favorites (persisted) + last-run status (in-memory) for quick access ---
+			const FAV_KEY = 'DevAllInOne.favorites';
+			const getFavs = (): string[] => context.workspaceState.get<string[]>(FAV_KEY, []);
+			const isFavorite = (fp: string) => getFavs().includes(fp);
+			const statusMap = new Map<string, string>();
+			radPlayerInstance.setDecorators(isFavorite, (fp) => statusMap.get(fp));
+
 			vscode.window.registerTreeDataProvider('DevAllInOne', radPlayerInstance);
+
+			// Shared runner: CMD/TERM go through the Execution Center (with status), others open directly.
+			const runAction = (label: string, fullpath: string) => {
+				const provider = radPlayerInstance;
+				if (!provider) { return; }
+				const raw = provider.getRawValue(fullpath);
+				if (raw === undefined) { return; }
+				const parts = raw.split('|');
+				const type = parts[0];
+				let command = (parts[3] || '').replace('${rootPath}', rootPath);
+				let argument = (parts[4] || '').replace('${rootPath}', rootPath);
+				if (type === 'CMD' || type === 'TERM') {
+					const commandLine = argument ? `${command} ${argument}` : command;
+					ExecutionCenter.instance(context).run(label, commandLine, rootPath, {
+						sourceId: fullpath,
+						onStatus: (s) => { statusMap.set(fullpath, s); provider.refresh(); }
+					});
+				} else {
+					vscode.commands.executeCommand('extension.justBeatIt', parts[3], type, parts[4], parts[1]);
+				}
+			};
+
+			// Toggle / remove favorite
+			vscode.commands.registerCommand('DevAllInOne.toggleFavorite', async (node: PlayerItem) => {
+				if (!node?.fullpath) { return; }
+				const favs = getFavs();
+				const idx = favs.indexOf(node.fullpath);
+				if (idx >= 0) { favs.splice(idx, 1); } else { favs.push(node.fullpath); }
+				await context.workspaceState.update(FAV_KEY, favs);
+				radPlayerInstance?.refresh();
+			});
+			vscode.commands.registerCommand('DevAllInOne.removeFavorite', async (node: PlayerItem) => {
+				if (!node?.fullpath) { return; }
+				const favs = getFavs().filter(f => f !== node.fullpath);
+				await context.workspaceState.update(FAV_KEY, favs);
+				radPlayerInstance?.refresh();
+			});
+			// Run favorite N (bound to Alt+1..9)
+			vscode.commands.registerCommand('DevAllInOne.runFavoriteByIndex', (index: number) => {
+				const favActions = radPlayerInstance?.getFavoriteActions() ?? [];
+				const target = favActions[index - 1];
+				if (target) {
+					runAction(target.label, target.fullpath);
+				} else {
+					vscode.window.setStatusBarMessage(`$(star) DevAllInOne: no favorite #${index}`, 2000);
+				}
+			});
+			// Quick-access dashboard
+			vscode.commands.registerCommand('DevAllInOne.showDashboard', () => {
+				const provider = radPlayerInstance;
+				if (!provider) { return; }
+				const getData = () => {
+					const all = provider.getFlatActions();
+					const recentIds = context.globalState.get<string[]>('DevAllInOne.recentActions', []);
+					const recent = recentIds
+						.map(id => all.find(a => a.pathLabel === id))
+						.filter((a): a is NonNullable<typeof a> => !!a)
+						.slice(0, 8);
+					return { all, favorites: provider.getFavoriteActions(), recent };
+				};
+				DashboardPanel.show(context, getData,
+					(fullpath) => {
+						const a = provider.getActionByPath(fullpath);
+						if (a) { runAction(a.label, a.fullpath); }
+					},
+					async (fullpath) => {
+						const favs = getFavs();
+						const i = favs.indexOf(fullpath);
+						if (i >= 0) { favs.splice(i, 1); } else { favs.push(fullpath); }
+						await context.workspaceState.update(FAV_KEY, favs);
+						provider.refresh();
+					}
+				);
+			});
 
 			// Watch config files so the tree auto-refreshes on external edits (no window reload).
 			const confWatcher = vscode.workspace.createFileSystemWatcher('**/conf/config*.json');
@@ -233,6 +316,21 @@ export function activate(context: vscode.ExtensionContext) {
 
 					}else if(type === "URL"){
 						vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(command));
+					}else if(type === "KEY"){
+						// Run a VS Code command (i.e. what a keyboard shortcut triggers).
+						// command = command id; argument = optional JSON args (array) or a single value.
+						let cmdArgs: any[] = [];
+						if (argument) {
+							try {
+								const parsed = JSON.parse(argument);
+								cmdArgs = Array.isArray(parsed) ? parsed : [parsed];
+							} catch {
+								cmdArgs = [argument];
+							}
+						}
+						Promise.resolve(vscode.commands.executeCommand(command, ...cmdArgs)).then(undefined, (err) => {
+							vscode.window.showErrorMessage(`Failed to run command "${command}": ${err?.message ?? err}`);
+						});
 					}else if(type === "DOC"){
 						// Determine the command based on the platform
 						const command = process.platform === 'win32' ? `start "" "${absolutePath}"` :
@@ -290,9 +388,9 @@ export function activate(context: vscode.ExtensionContext) {
 					const value = `${form.type}|${form.reserved1}|${form.reserved2}|${form.command}|${form.argument}`;
 					const ok = provider.addNode(parentPath, form.key, value);
 					if (ok) {
-						vscode.window.showInformationMessage(`已新增动作：${form.key}`);
+						vscode.window.showInformationMessage(`Action added: ${form.key}`);
 					} else {
-						vscode.window.showErrorMessage(`同级已存在名称 "${form.key}"，请换一个名称`);
+						vscode.window.showErrorMessage(`A sibling named "${form.key}" already exists, please use another name`);
 					}
 				});
 			});
@@ -301,12 +399,12 @@ export function activate(context: vscode.ExtensionContext) {
 				if (!provider || !node?.fullpath) { return; }
 				const nodePath = node.fullpath;
 				if (!provider.existsInPrimary(nodePath)) {
-					vscode.window.showWarningMessage('该节点不在 conf/config.json 中（可能来自 config_local.json 或外部文件），暂不支持在此编辑。');
+					vscode.window.showWarningMessage('This node is not in conf/config.json (it may come from config_local.json or an external file), editing here is not supported.');
 					return;
 				}
 				const raw = provider.getRawValue(nodePath);
 				if (raw === undefined) {
-					vscode.window.showWarningMessage('该节点是分组，暂不支持表单编辑；可使用重命名或在其下新增动作。');
+					vscode.window.showWarningMessage('This node is a group; form editing is not supported. Use Rename, or add an action under it.');
 					return;
 				}
 				const parts = raw.split('|');
@@ -324,9 +422,9 @@ export function activate(context: vscode.ExtensionContext) {
 					const value = `${form.type}|${form.reserved1}|${form.reserved2}|${form.command}|${form.argument}`;
 					const ok = provider.updateLeaf(nodePath, value);
 					if (ok) {
-						vscode.window.showInformationMessage(`已更新动作：${form.key}`);
+						vscode.window.showInformationMessage(`Action updated: ${form.key}`);
 					} else {
-						vscode.window.showErrorMessage('更新失败，请检查节点是否仍存在。');
+						vscode.window.showErrorMessage('Update failed, please check the node still exists.');
 					}
 				});
 			});
@@ -335,19 +433,19 @@ export function activate(context: vscode.ExtensionContext) {
 				if (!provider || !node?.fullpath) { return; }
 				const nodePath = node.fullpath;
 				if (!provider.existsInPrimary(nodePath)) {
-					vscode.window.showWarningMessage('该节点不在 conf/config.json 中，暂不支持删除。');
+					vscode.window.showWarningMessage('This node is not in conf/config.json, deleting is not supported.');
 					return;
 				}
 				const confirm = await vscode.window.showWarningMessage(
-					`确定删除 "${node.label}" 吗？此操作会写回 conf/config.json。`,
-					{ modal: true }, '删除'
+					`Delete "${node.label}"? This will write back to conf/config.json.`,
+					{ modal: true }, 'Delete'
 				);
-				if (confirm === '删除') {
+				if (confirm === 'Delete') {
 					const ok = provider.deleteNode(nodePath);
 					if (ok) {
-						vscode.window.showInformationMessage(`已删除：${node.label}`);
+						vscode.window.showInformationMessage(`Deleted: ${node.label}`);
 					} else {
-						vscode.window.showErrorMessage('删除失败，请检查节点是否仍存在。');
+						vscode.window.showErrorMessage('Delete failed, please check the node still exists.');
 					}
 				}
 			});
@@ -356,43 +454,53 @@ export function activate(context: vscode.ExtensionContext) {
 				if (!provider || !node?.fullpath) { return; }
 				const nodePath = node.fullpath;
 				if (!provider.existsInPrimary(nodePath)) {
-					vscode.window.showWarningMessage('该节点不在 conf/config.json 中，暂不支持重命名。');
+					vscode.window.showWarningMessage('This node is not in conf/config.json, renaming is not supported.');
 					return;
 				}
 				const newName = await vscode.window.showInputBox({
-					prompt: '输入新名称', value: String(node.label),
-					validateInput: (v) => v.trim() ? undefined : '名称不能为空'
+					prompt: 'Enter a new name', value: String(node.label),
+					validateInput: (v) => v.trim() ? undefined : 'Name cannot be empty'
 				});
 				if (newName && newName.trim() && newName.trim() !== String(node.label)) {
 					const ok = provider.renameNode(nodePath, newName.trim());
 					if (ok) {
-						vscode.window.showInformationMessage(`已重命名为：${newName.trim()}`);
+						vscode.window.showInformationMessage(`Renamed to: ${newName.trim()}`);
 					} else {
-						vscode.window.showErrorMessage('重命名失败：同级可能已存在该名称。');
+						vscode.window.showErrorMessage('Rename failed: a sibling with that name may already exist.');
 					}
 				}
 			});
 			// Run an action's command in the Execution Center with streaming logs.
 			vscode.commands.registerCommand('DevAllInOne.runWithLogs', (node: PlayerItem) => {
-				const provider = radPlayerInstance;
-				if (!provider || !node?.fullpath) { return; }
-				const raw = provider.getRawValue(node.fullpath);
+				if (!radPlayerInstance || !node?.fullpath) { return; }
+				const raw = radPlayerInstance.getRawValue(node.fullpath);
 				if (raw === undefined) {
-					vscode.window.showWarningMessage('分组节点不可执行，请选择具体动作。');
+					vscode.window.showWarningMessage('Group nodes are not runnable, please pick a specific action.');
 					return;
 				}
-				const parts = raw.split('|');
-				const type = parts[0];
-				let command = parts[3] || '';
-				let argument = parts[4] || '';
-				command = command.replace('${rootPath}', rootPath);
-				argument = argument.replace('${rootPath}', rootPath);
+				const type = raw.split('|')[0];
 				if (type !== 'CMD' && type !== 'TERM') {
-					vscode.window.showWarningMessage(`类型 ${type} 暂不支持在执行中心运行（仅 CMD/TERM）。`);
+					vscode.window.showWarningMessage(`Type ${type} cannot run in the Execution Center (CMD/TERM only).`);
 					return;
 				}
-				const commandLine = argument ? `${command} ${argument}` : command;
-				ExecutionCenter.instance(context).run(String(node.label), commandLine, rootPath);
+				runAction(String(node.label), node.fullpath);
+			});
+			// Run a group as a sequence (its direct CMD/TERM children, in order, stop on failure).
+			vscode.commands.registerCommand('DevAllInOne.runSequence', (node: PlayerItem) => {
+				if (!radPlayerInstance || !node?.fullpath) { return; }
+				const actions = radPlayerInstance.getGroupActions(node.fullpath);
+				const steps = actions
+					.filter(a => a.type === 'CMD' || a.type === 'TERM')
+					.map(a => {
+						const command = (a.command || '').replace('${rootPath}', rootPath);
+						const argument = (a.argument || '').replace('${rootPath}', rootPath);
+						return { label: a.label, commandLine: argument ? `${command} ${argument}` : command };
+					});
+				if (!steps.length) {
+					vscode.window.showWarningMessage('No runnable CMD/TERM actions directly under this group.');
+					return;
+				}
+				ExecutionCenter.instance(context).runSequence(String(node.label), steps, rootPath);
 			});
 
 
@@ -495,12 +603,13 @@ async function showQuickPickMenu(
 	// Built-in tools
 	interface MenuItem extends vscode.QuickPickItem { run: () => void; recentId?: string; }
 	const builtIn: MenuItem[] = [
-		{ label: '$(regex) 正则查询表', run: () => vscode.commands.executeCommand('DevAllInOne.showRegexpLookupTable') },
-		{ label: '$(code) ASCII码表', run: () => vscode.commands.executeCommand('DevAllInOne.showAsciiLookupTable') },
+		{ label: '$(dashboard) Quick Access Dashboard', run: () => vscode.commands.executeCommand('DevAllInOne.showDashboard') },
+		{ label: '$(regex) Regex Lookup Table', run: () => vscode.commands.executeCommand('DevAllInOne.showRegexpLookupTable') },
+		{ label: '$(code) ASCII Table', run: () => vscode.commands.executeCommand('DevAllInOne.showAsciiLookupTable') },
 		{ label: '$(globe) HTTP Client', run: () => vscode.commands.executeCommand('DevAllInOne.showHttpClient') },
-		{ label: '$(symbol-variable) 环境变量', run: () => vscode.commands.executeCommand('DevAllInOne.showEnvVariables') },
-		{ label: '$(pulse) 执行中心', run: () => vscode.commands.executeCommand('DevAllInOne.showExecutionCenter') },
-		{ label: '$(bookmark) 添加书签', run: () => vscode.commands.executeCommand('DevAllInOne.addBookmark') }
+		{ label: '$(symbol-variable) Environment Variables', run: () => vscode.commands.executeCommand('DevAllInOne.showEnvVariables') },
+		{ label: '$(pulse) Execution Center', run: () => vscode.commands.executeCommand('DevAllInOne.showExecutionCenter') },
+		{ label: '$(bookmark) Add Bookmark', run: () => vscode.commands.executeCommand('DevAllInOne.addBookmark') }
 	];
 
 	// Config actions (dynamic, fuzzy-searchable)
@@ -523,25 +632,25 @@ async function showQuickPickMenu(
 	for (const id of recentIds) {
 		const found = actionItems.find(i => i.recentId === id);
 		if (found) {
-			recentItems.push({ ...found, description: `${found.description ?? ''}  ·  最近使用`.trim() });
+			recentItems.push({ ...found, description: `${found.description ?? ''}  ·  recent`.trim() });
 		}
 		if (recentItems.length >= 5) { break; }
 	}
 
 	const items: MenuItem[] = [];
 	if (recentItems.length) {
-		items.push({ label: '最近使用', kind: vscode.QuickPickItemKind.Separator, run: () => {} } as MenuItem);
+		items.push({ label: 'Recent', kind: vscode.QuickPickItemKind.Separator, run: () => {} } as MenuItem);
 		items.push(...recentItems);
 	}
-	items.push({ label: '工具', kind: vscode.QuickPickItemKind.Separator, run: () => {} } as MenuItem);
+	items.push({ label: 'Tools', kind: vscode.QuickPickItemKind.Separator, run: () => {} } as MenuItem);
 	items.push(...builtIn);
 	if (actionItems.length) {
-		items.push({ label: '配置动作', kind: vscode.QuickPickItemKind.Separator, run: () => {} } as MenuItem);
+		items.push({ label: 'Config Actions', kind: vscode.QuickPickItemKind.Separator, run: () => {} } as MenuItem);
 		items.push(...actionItems);
 	}
 
 	const selected = await vscode.window.showQuickPick(items, {
-		placeHolder: '搜索并执行动作（工具 / 配置命令 / 最近使用）',
+		placeHolder: 'Search and run an action (Tools / Config commands / Recent)',
 		matchOnDescription: true,
 		matchOnDetail: true
 	});
